@@ -1,0 +1,17 @@
+services:
+  soat-fast-food-api:
+    build: .
+    ports:
+      - "8080:8080"
+  soat-fast-food-db:
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=soat_fast_food
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql-volume:/var/lib/mysql
+volumes:
+  mysql-volume:
+    driver: local
