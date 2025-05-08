@@ -1,17 +1,27 @@
 package mysql
 
 import (
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/persistance/repositories"
-    "github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
+    "database/sql"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/dto"
+    "github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/persistance/repositories"
 )
 
-type UserRepository struct {}
-
-func NewUserRepository() repositories.UserRepository {
-    return &UserRepository{}
+type UserRepository struct {
+    db *sql.DB
 }
 
-func (u *UserRepository) CreateUser(user *entities.User) error {
+func NewUserRepository(db *sql.DB) repositories.UserRepository {
+    return &UserRepository{db: db}
+}
+
+func (u *UserRepository) CreateUser(user *dto.CreateUserDTO) error {
+    query := "INSERT INTO users (first_name, last_name, cpf, email) VALUES (?, ?, ?, ?)"
+
+    _, err := u.db.Exec(query, user.FirstName, user.LastName, user.CPF, user.Email)
+
+    if err != nil {
+        return err
+    }
 
     return nil
 }

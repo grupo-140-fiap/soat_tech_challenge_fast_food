@@ -1,9 +1,9 @@
 package repositories
 
 import (
-    "github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
+    "github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/dto"
 )
 
 type UserRepository interface {
-    CreateUser(user *entities.User) error
+    CreateUser(user *dto.CreateUserDTO) error
 }
