@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/persistance/repositories"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/dto"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 )
 
 type UserService struct {

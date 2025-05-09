@@ -2,8 +2,8 @@ package mysql
 
 import (
     "database/sql"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/dto"
-    "github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/persistance/repositories"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
+    "github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
 )
 
 type UserRepository struct {

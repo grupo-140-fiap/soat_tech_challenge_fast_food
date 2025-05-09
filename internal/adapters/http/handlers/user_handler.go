@@ -4,7 +4,7 @@ import (
 	"net/http"
     "github.com/gin-gonic/gin"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/services"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/dto"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 )
 
 type UserHandler struct {
@@ -24,6 +24,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid input",
 		})
+
 		return
 	}
 
