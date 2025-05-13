@@ -1,6 +1,6 @@
 USE soat_fast_food;
 
-CREATE TABLE users (
+CREATE TABLE customers (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     first_name  VARCHAR(100),
     last_name   VARCHAR(100),
@@ -12,14 +12,14 @@ CREATE TABLE users (
 
 CREATE TABLE orders (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id     BIGINT UNSIGNED NULL REFERENCES users(id),
+    customer_id     BIGINT UNSIGNED NULL REFERENCES customers(id),
     cpf         VARCHAR(14),
     status      VARCHAR(20),
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE menu_items (
+CREATE TABLE products (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     description TEXT,
@@ -31,7 +31,7 @@ CREATE TABLE menu_items (
 CREATE TABLE order_items (
     id           BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     order_id     BIGINT UNSIGNED NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-    menu_item_id BIGINT UNSIGNED NOT NULL REFERENCES menu_items(id),
+    product_id BIGINT UNSIGNED NOT NULL REFERENCES products(id),
     quantity     INTEGER NOT NULL DEFAULT 1,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP

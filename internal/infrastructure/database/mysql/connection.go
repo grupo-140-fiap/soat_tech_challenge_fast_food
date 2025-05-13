@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"database/sql"
@@ -16,13 +16,13 @@ func NewConnection() (*sql.DB, error) {
 		log.Println("Warning: Could not load the .env file, using system environment variables")
 	}
 
-	user := os.Getenv("DB_USER")
+	customer := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
 	database := os.Getenv("DB_NAME")
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", user, password, host, port, database)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", customer, password, host, port, database)
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {

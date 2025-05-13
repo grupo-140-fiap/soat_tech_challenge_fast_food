@@ -4,6 +4,6 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 )
 
-type UserService interface {
-	CreateUser(user *dto.CreateUserDTO) error
+type CustomerService interface {
+	CreateCustomer(customer *dto.CreateCustomerDTO) error
 }

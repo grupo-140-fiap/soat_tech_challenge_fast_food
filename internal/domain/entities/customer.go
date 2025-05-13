@@ -2,7 +2,7 @@ package entities
 
 import "time"
 
-type User struct {
+type Customer struct {
     Id        uint64    `json:"id"`
     FirstName string    `json:"first_name"`
     LastName  string    `json:"last_name"`
