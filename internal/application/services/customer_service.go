@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
 )
 
 type CustomerService struct {
@@ -23,4 +24,14 @@ func (u *CustomerService) CreateCustomer(customer *dto.CreateCustomerDTO) error 
 	}
 	
 	return nil
+}
+
+func (u *CustomerService) GetCustomerByCpf(cpf string) (*entities.Customer, error) {
+	customer, err := u.customerRepository.GetCustomerByCpf(cpf)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return customer, nil
 }

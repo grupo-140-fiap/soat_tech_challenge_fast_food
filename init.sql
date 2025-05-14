@@ -24,6 +24,7 @@ CREATE TABLE products (
     name        VARCHAR(100) NOT NULL,
     description TEXT,
     price       INTEGER NOT NULL,
+    category    ENUM('burger', 'side', 'drink', 'desert'),
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

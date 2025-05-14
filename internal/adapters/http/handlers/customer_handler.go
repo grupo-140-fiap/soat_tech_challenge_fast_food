@@ -43,3 +43,20 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 		"message": "Customer created successfully",
 	})
 }
+
+func (h *CustomerHandler) GetCustomerByCpf(c *gin.Context) {
+	cpf := c.Param("cpf")
+
+	user, err := h.customerService.GetCustomerByCpf(cpf)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed on find customer",
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}

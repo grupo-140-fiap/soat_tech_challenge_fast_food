@@ -7,8 +7,8 @@ Este projeto é parte do **Tech Challenge - Fase 01**, e tem como objetivo desen
 ## ✅ Checklist de Endpoints da API
 
 ### 👤 Customers
-- [ ] `POST /customers` — Cadastrar novo cliente
-- [ ] `GET /customers/{cpf}` — Buscar cliente pelo CPF
+- [x] `POST /customers` — Cadastrar novo cliente
+- [x] `GET /customers/{cpf}` — Buscar cliente pelo CPF
 
 ### 🍔 Products
 - [ ] `POST /products` — Criar novo produto
@@ -25,7 +25,6 @@ Este projeto é parte do **Tech Challenge - Fase 01**, e tem como objetivo desen
 
 ### 📊 Admin / Monitoramento
 - [ ] `GET /admin/orders/active` — Listar pedidos em andamento
-- [ ] `GET /admin/orders/wait-time` — Consultar tempo médio de espera dos pedidos
 
 ### 📦 Categories (Opcional)
 - [ ] `GET /categories` — Listar categorias de produtos (`burger`, `side`, `drink`, `dessert`)
