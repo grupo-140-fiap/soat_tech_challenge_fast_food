@@ -5,5 +5,6 @@ type CreateProductDTO struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Price       string `json:"price"`
+	Category    string `json:"category"`
 	Image       string `json:"image"`
 }

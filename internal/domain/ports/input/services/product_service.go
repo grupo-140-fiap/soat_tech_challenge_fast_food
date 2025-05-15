@@ -7,5 +7,5 @@ import (
 
 type ProductService interface {
 	CreateProduct(product *dto.CreateProductDTO) error
-	GetProductById(cpf string) (*entities.Product, error)
+	GetProductById(id string) (*entities.Product, error)
 }

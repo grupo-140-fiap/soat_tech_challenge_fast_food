@@ -24,6 +24,13 @@ curl -i -X GET http://localhost:8080/api/v1/customers/xxx.xxx.xxx-xx
 - [ ] `GET /products` — Listar todos os produtos
 - [ ] `GET /products?category={category}` — Listar produtos por categoria (`burger`, `side`, `drink`, `dessert`)
 
+#### Exemple
+```bash
+ccurl -i -X POST http://localhost:8080/api/v1/products -d '{"name":"Pizza","description":"queijo","price":"40","category":"burger"}'
+
+curl -i -X GET http://localhost:8080/api/v1/producs/xxx
+```
+
 ### 🧾 Orders (Checkout)
 - [ ] `POST /checkout` — Criar novo pedido (enviar para fila, simular pagamento)
 - [ ] `GET /orders` — Listar todos os pedidos
