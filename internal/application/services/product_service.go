@@ -45,3 +45,13 @@ func (u *ProductService) UpdateProduct(product *dto.ProductDTO) error {
 
 	return nil
 }
+
+func (u *ProductService) DeleteProductById(id string) error {
+	err := u.productRepository.DeleteProductById(id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -105,3 +105,21 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 		"message": "Product updated successfully",
 	})
 }
+
+func (h *ProductHandler) DeleteProductById(c *gin.Context) {
+	id := c.Param("id")
+
+	err := h.productService.DeleteProductById(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed on find product",
+			"error":   err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Product deleted successfully",
+	})
+}

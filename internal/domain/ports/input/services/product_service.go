@@ -12,5 +12,5 @@ type ProductService interface {
 	CreateProduct(product *dto.ProductDTO) error
 	UpdateProduct(product *dto.ProductDTO) error
 
-	// DeleteProductById(id string) (bool, error)
+	DeleteProductById(id string) error
 }

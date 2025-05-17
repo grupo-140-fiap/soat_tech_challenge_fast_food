@@ -10,4 +10,5 @@ type ProductRepository interface {
 	GetProductById(id string) (*entities.Product, error)
 
 	UpdateProduct(product *dto.ProductDTO) error
+	DeleteProductById(id string) error
 }

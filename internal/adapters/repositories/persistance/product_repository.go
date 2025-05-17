@@ -58,3 +58,15 @@ func (u *ProductRepository) UpdateProduct(product *dto.ProductDTO) error {
 
 	return nil
 }
+
+func (u *ProductRepository) DeleteProductById(id string) error {
+	query := "DELETE FROM products WHERE id = ?"
+
+	_, err := u.db.Exec(query, id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

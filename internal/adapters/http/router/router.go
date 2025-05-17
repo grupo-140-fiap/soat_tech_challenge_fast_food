@@ -45,6 +45,6 @@ func setProductRouter(db *sql.DB, router *gin.Engine) {
 	// v1.GET("/products/:category", productHandler.GetProductByCategory)
 	v1.POST("/products", productHandler.CreateProduct)
 	v1.PUT("/products", productHandler.UpdateProduct)
-	// v1.DELETE("/products/:id", productHandler.DeleteProductById)
+	v1.DELETE("/products/:id", productHandler.DeleteProductById)
 
 }
