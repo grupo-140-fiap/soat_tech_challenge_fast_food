@@ -18,8 +18,42 @@ func NewProductHandler(productService services.ProductService) *ProductHandler {
 	}
 }
 
+func (h *ProductHandler) GetProductById(c *gin.Context) {
+	id := c.Param("id")
+
+	product, err := h.productService.GetProductById(id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed on find product",
+			"error":   err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, product)
+}
+
+func (h *ProductHandler) GetProductByCategory(c *gin.Context) {
+	category := c.Param("category")
+
+	products, err := h.productService.GetProductByCategory(category)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed on find product",
+			"error":   err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, products)
+}
+
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
-	var productDTO dto.CreateProductDTO
+	var productDTO dto.ProductDTO
 
 	if err := c.ShouldBindJSON(&productDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -45,11 +79,37 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	})
 }
 
-func (h *ProductHandler) GetProductById(c *gin.Context) {
+func (h *ProductHandler) UpdateProduct(c *gin.Context) {
+	var productDTO dto.ProductDTO
+
+	if err := c.ShouldBindJSON(&productDTO); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid input",
+		})
+
+		return
+	}
+
+	err := h.productService.UpdateProduct(&productDTO)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed to update product",
+			"error":   err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Product updated successfully",
+	})
+}
+
+func (h *ProductHandler) DeleteProductById(c *gin.Context) {
 	id := c.Param("id")
 
-	user, err := h.productService.GetProductById(id)
-
+	err := h.productService.DeleteProductById(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Failed on find product",
@@ -59,5 +119,7 @@ func (h *ProductHandler) GetProductById(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Product deleted successfully",
+	})
 }

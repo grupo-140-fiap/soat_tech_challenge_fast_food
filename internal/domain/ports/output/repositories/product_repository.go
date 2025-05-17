@@ -6,6 +6,9 @@ import (
 )
 
 type ProductRepository interface {
-	CreateProduct(product *dto.CreateProductDTO) error
+	CreateProduct(product *dto.ProductDTO) error
 	GetProductById(id string) (*entities.Product, error)
+	GetProductByCategory(category string) ([]entities.Product, error)
+	UpdateProduct(product *dto.ProductDTO) error
+	DeleteProductById(id string) error
 }

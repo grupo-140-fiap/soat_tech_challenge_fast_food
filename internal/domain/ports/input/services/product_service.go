@@ -6,6 +6,11 @@ import (
 )
 
 type ProductService interface {
-	CreateProduct(product *dto.CreateProductDTO) error
 	GetProductById(id string) (*entities.Product, error)
+	GetProductByCategory(category string) ([]entities.Product, error)
+
+	CreateProduct(product *dto.ProductDTO) error
+	UpdateProduct(product *dto.ProductDTO) error
+
+	DeleteProductById(id string) error
 }

@@ -16,7 +16,7 @@ func NewProductService(productRepository repositories.ProductRepository) *Produc
 	}
 }
 
-func (u *ProductService) CreateProduct(product *dto.CreateProductDTO) error {
+func (u *ProductService) CreateProduct(product *dto.ProductDTO) error {
 	err := u.productRepository.CreateProduct(product)
 
 	if err != nil {
@@ -34,4 +34,34 @@ func (u *ProductService) GetProductById(id string) (*entities.Product, error) {
 	}
 
 	return product, nil
+}
+
+func (u *ProductService) GetProductByCategory(category string) ([]entities.Product, error) {
+	products, err := u.productRepository.GetProductByCategory(category)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return products, nil
+}
+
+func (u *ProductService) UpdateProduct(product *dto.ProductDTO) error {
+	err := u.productRepository.UpdateProduct(product)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *ProductService) DeleteProductById(id string) error {
+	err := u.productRepository.DeleteProductById(id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
