@@ -19,16 +19,22 @@ curl -i -X GET http://localhost:8080/api/v1/customers/xxx.xxx.xxx-xx
 
 ### 🍔 Products
 - [ ] `POST /products` — Criar novo produto
-- [ ] `PUT /products/{id}` — Atualizar produto existente
+- [ ] `PUT /products`  — Atualizar produto existente
 - [ ] `DELETE /products/{id}` — Remover produto
 - [ ] `GET /products` — Listar todos os produtos
 - [ ] `GET /products?category={category}` — Listar produtos por categoria (`burger`, `side`, `drink`, `dessert`)
 
 #### Exemple
 ```bash
-ccurl -i -X POST http://localhost:8080/api/v1/products -d '{"name":"Pizza","description":"queijo","price":"40","category":"burger"}'
+curl -X POST http://localhost:8080/api/v1/products -H "Content-Type: application/json" -d '{"name":"Pizza","description":"queijo","price":"40","category":"burger"}'
 
-curl -i -X GET http://localhost:8080/api/v1/producs/xxx
+curl -X GET http://localhost:8080/api/v1/producs/12
+
+curl -i -XPUT http://localhost:8080/api/v1/products -d '{"id":1, "name":"Pizza-u","description":"queijo","price":"40","category":"burger"}'
+
+curl -X DELETE http://localhost:8080/api/v1/products/1
+
+curl -X GET http://localhost:8080/api/v1/products/category/burger
 ```
 
 ### 🧾 Orders (Checkout)
