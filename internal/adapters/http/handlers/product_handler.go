@@ -35,22 +35,22 @@ func (h *ProductHandler) GetProductById(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
-// func (h *ProductHandler) GetProductByCategory(c *gin.Context) {
-// 	category := c.Param("category")
+func (h *ProductHandler) GetProductByCategory(c *gin.Context) {
+	category := c.Param("category")
 
-// 	products, err := h.productService.GetProductByCategory(category)
+	products, err := h.productService.GetProductByCategory(category)
 
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{
-// 			"message": "Failed on find product",
-// 			"error":   err.Error(),
-// 		})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed on find product",
+			"error":   err.Error(),
+		})
 
-// 		return
-// 	}
+		return
+	}
 
-// 	c.JSON(http.StatusOK, products)
-// }
+	c.JSON(http.StatusOK, products)
+}
 
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	var productDTO dto.ProductDTO

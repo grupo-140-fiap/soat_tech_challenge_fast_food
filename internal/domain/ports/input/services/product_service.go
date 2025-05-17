@@ -7,7 +7,7 @@ import (
 
 type ProductService interface {
 	GetProductById(id string) (*entities.Product, error)
-	//	GetProductByCategory(category string) ([]*entities.Product, error)
+	GetProductByCategory(category string) ([]entities.Product, error)
 
 	CreateProduct(product *dto.ProductDTO) error
 	UpdateProduct(product *dto.ProductDTO) error

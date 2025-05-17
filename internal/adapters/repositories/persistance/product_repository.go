@@ -47,6 +47,25 @@ func (u *ProductRepository) GetProductById(id string) (*entities.Product, error)
 	return &product, nil
 }
 
+func (u *ProductRepository) GetProductByCategory(category string) ([]entities.Product, error) {
+	rows, err := u.db.Query("SELECT id, name, description, price, category FROM products WHERE category = ?", category)
+	if err != nil {
+		return nil, fmt.Errorf("products with CATEGORY %s not found", category)
+	}
+	defer rows.Close()
+
+	var products []entities.Product
+	for rows.Next() {
+		var p entities.Product
+		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Category); err != nil {
+			return nil, err
+		}
+		products = append(products, p)
+	}
+
+	return products, nil
+}
+
 func (u *ProductRepository) UpdateProduct(product *dto.ProductDTO) error {
 	query := "UPDATE products SET name = ?, description = ?, price = ?, category = ? WHERE id = ?"
 
