@@ -17,7 +17,7 @@ func NewProductRepository(db *sql.DB) repositories.ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (u *ProductRepository) CreateProduct(product *dto.CreateProductDTO) error {
+func (u *ProductRepository) CreateProduct(product *dto.ProductDTO) error {
 	query := "INSERT INTO products (name, description, price, category) VALUES (?, ?, ?, ?)"
 
 	_, err := u.db.Exec(query, product.Name, product.Description, product.Price, product.Category)
@@ -45,4 +45,16 @@ func (u *ProductRepository) GetProductById(id string) (*entities.Product, error)
 	}
 
 	return &product, nil
+}
+
+func (u *ProductRepository) UpdateProduct(product *dto.ProductDTO) error {
+	query := "UPDATE products SET name = ?, description = ?, price = ?, category = ? WHERE id = ?"
+
+	_, err := u.db.Exec(query, product.Name, product.Description, product.Price, product.Category, product.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

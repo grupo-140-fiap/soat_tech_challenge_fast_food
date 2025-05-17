@@ -1,6 +1,6 @@
 package dto
 
-type CreateProductDTO struct {
+type ProductDTO struct {
 	ID          uint64 `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`

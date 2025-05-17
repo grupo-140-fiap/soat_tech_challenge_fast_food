@@ -41,6 +41,10 @@ func setProductRouter(db *sql.DB, router *gin.Engine) {
 	productHandler := handlers.NewProductHandler(productService)
 
 	v1 := router.Group("/api/v1")
-	v1.POST("/products", productHandler.CreateProduct)
 	v1.GET("/products/:id", productHandler.GetProductById)
+	// v1.GET("/products/:category", productHandler.GetProductByCategory)
+	v1.POST("/products", productHandler.CreateProduct)
+	v1.PUT("/products", productHandler.UpdateProduct)
+	// v1.DELETE("/products/:id", productHandler.DeleteProductById)
+
 }
