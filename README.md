@@ -2,6 +2,13 @@
 
 Este projeto é parte do **Tech Challenge - Fase 01**, e tem como objetivo desenvolver um sistema de controle de pedidos para uma lanchonete em expansão, focado em autoatendimento, gestão de pedidos e controle administrativo.
 
+## 📚 Documentação da API
+
+A documentação interativa da API está disponível através do Swagger. Para acessá-la:
+
+1. Inicie a aplicação com `go run cmd/server/main.go`
+2. Acesse [http://localhost:8080/swagger/index.html#/](http://localhost:8080/swagger/index.html#/) em seu navegador
+
 ---
 
 ## ✅ Checklist de Endpoints da API

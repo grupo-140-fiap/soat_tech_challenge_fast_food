@@ -9,6 +9,9 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/adapters/repositories/persistance"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/services"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/infrastructure/database/mysql"
+	docs "github.com/samuellalvs/soat_tech_challenge_fast_food/docs"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	swaggerfiles "github.com/swaggo/files"
 )
 
 func SetupRouter() *gin.Engine {
@@ -21,6 +24,7 @@ func SetupRouter() *gin.Engine {
 
 	setCustomerRouter(db, router)
 	setProductRouter(db, router)
+	setSwagger(router)
 
 	return router
 }
@@ -49,3 +53,11 @@ func setProductRouter(db *sql.DB, router *gin.Engine) {
 	v1.DELETE("/products/:id", productHandler.DeleteProductById)
 
 }
+
+func setSwagger(router *gin.Engine) {
+	docs.SwaggerInfo.BasePath = "/api/v1"
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+}
+
+

@@ -1,0 +1,245 @@
+definitions:
+  dto.CreateCustomerDTO:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+    type: object
+  dto.ProductDTO:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+    type: object
+  entities.Customer:
+    properties:
+      cpf:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entities.Product:
+    properties:
+      category:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+      updated_at:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /customers:
+    post:
+      consumes:
+      - application/json
+      description: Create new customer
+      parameters:
+      - description: customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCustomerDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Create new customer
+      tags:
+      - customer
+  /customers/{cpf}:
+    get:
+      description: Retrieves a customer by their CPF (Cadastro de Pessoas Físicas).
+      parameters:
+      - description: Customer CPF
+        in: path
+        name: cpf
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Customer'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get customer by CPF
+      tags:
+      - customers
+  /products:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new product using the provided JSON payload
+      parameters:
+      - description: Product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to create product
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Updates the details of an existing product based on the provided
+        JSON payload.
+      parameters:
+      - description: Product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to update product
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update an existing product
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      description: Deletes a product from the database using its unique identifier.
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Product deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed on find product
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete a product by ID
+      tags:
+      - products
+    get:
+      description: Retrieves a product by its unique identifier.
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get product by ID
+      tags:
+      - products
+  /products/category/{category}:
+    get:
+      description: Retrieves a list of products filtered by the specified category.
+      parameters:
+      - description: Product Category
+        in: path
+        name: category
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Product'
+            type: array
+        "500":
+          description: Failed on find product
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get products by category
+      tags:
+      - products
+swagger: "2.0"
