@@ -17,6 +17,15 @@ func NewCustomerHandler(customerService services.CustomerService) *CustomerHandl
 	}
 }
 
+// CreateCustomer godoc
+// @Summary Create new customer
+// @Description Create new customer
+// @Tags customer
+// @Accept json
+// @Produce json
+// @Param customer body dto.CreateCustomerDTO true "customer"
+// @Success 200
+// @Router /customers [post]
 func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 	var customerDTO dto.CreateCustomerDTO
 
@@ -44,6 +53,15 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 	})
 }
 
+// GetCustomerByCpf godoc
+// @Summary      Get customer by CPF
+// @Description  Retrieves a customer by their CPF (Cadastro de Pessoas Físicas).
+// @Tags         customers
+// @Param        cpf   path      string  true  "Customer CPF"
+// @Produce      json
+// @Success      200  {object}  entities.Customer
+// @Failure      500  {object}  map[string]interface{}
+// @Router       /customers/{cpf} [get]
 func (h *CustomerHandler) GetCustomerByCpf(c *gin.Context) {
 	cpf := c.Param("cpf")
 
