@@ -44,11 +44,13 @@ curl -X DELETE http://localhost:8080/api/v1/products/1
 curl -X GET http://localhost:8080/api/v1/products/category/burger
 ```
 
-### 🧾 Orders (Checkout)
-- [ ] `POST /checkout` — Criar novo pedido (enviar para fila, simular pagamento)
+### 🧾 Orders
+- [ ] `POST /orders` — Criar novo pedido (enviar para fila, simular pagamento)
 - [ ] `GET /orders` — Listar todos os pedidos
 - [ ] `GET /orders/{id}` — Buscar detalhes do pedido por ID
 - [ ] `PATCH /orders/{id}/status` — Atualizar status do pedido (`received`, `preparing`, `ready`, `completed`)
+
+### 🧾 Pagementos
 
 ### 📊 Admin / Monitoramento
 - [ ] `GET /admin/orders/active` — Listar pedidos em andamento
