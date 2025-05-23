@@ -22,6 +22,13 @@ func (u *OrderService) CreateOrder(order *dto.OrderDTO) error {
 
 	if err != nil {
 		return err
+	} else {
+		for _, item := range order.Items {
+			err = u.orderItemRepository.CreateOrderItem(&item)
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

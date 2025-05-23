@@ -37,6 +37,8 @@ func (u *OrderRepository) CreateOrder(order *dto.OrderDTO) error {
 		log.Fatal(err)
 	}
 
+	order.ID = uint64(lastID)
+
 	fmt.Printf("Inserted record with ID: %d\n", lastID)
 
 	return nil
