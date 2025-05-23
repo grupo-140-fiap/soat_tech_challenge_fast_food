@@ -44,3 +44,20 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		"message": "Order created successfully",
 	})
 }
+
+func (h *OrderHandler) GetOrderById(c *gin.Context) {
+	id := c.Param("id")
+
+	order, err := h.orderService.GetOrderById(id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed on find order",
+			"error":   err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, order)
+}

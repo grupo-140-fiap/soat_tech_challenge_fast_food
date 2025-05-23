@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
 )
 
@@ -42,4 +43,22 @@ func (u *OrderRepository) CreateOrder(order *dto.OrderDTO) error {
 	fmt.Printf("Inserted record with ID: %d\n", lastID)
 
 	return nil
+}
+
+func (u *OrderRepository) GetOrderById(id string) (*entities.Orders, error) {
+	query := "SELECT id, customer_id, cpf, status FROM orders WHERE id = ?"
+	row := u.db.QueryRow(query, id)
+
+	var orders entities.Orders
+	err := row.Scan(&orders.ID, &orders.CustomerId, &orders.CPF, &orders.Status)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("orders with ID %s not found", id)
+		}
+
+		return nil, err
+	}
+
+	return &orders, nil
 }

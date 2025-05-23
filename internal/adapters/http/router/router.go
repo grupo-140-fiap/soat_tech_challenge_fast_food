@@ -63,6 +63,7 @@ func setOrdersRouter(db *sql.DB, router *gin.Engine) {
 
 	v1 := router.Group("/api/v1")
 	v1.POST("/checkout", orderHandler.CreateOrder)
+	v1.GET("/orders/:id", orderHandler.GetOrderById)
 }
 
 func setSwagger(router *gin.Engine) {

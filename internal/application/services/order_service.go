@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
 )
 
@@ -32,4 +33,14 @@ func (u *OrderService) CreateOrder(order *dto.OrderDTO) error {
 	}
 
 	return nil
+}
+
+func (u *OrderService) GetOrderById(id string) (*entities.Orders, error) {
+	order, err := u.orderRepository.GetOrderById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return order, nil
 }
