@@ -62,3 +62,14 @@ func (u *OrderRepository) GetOrderById(id string) (*entities.Orders, error) {
 
 	return &orders, nil
 }
+
+func (u *OrderRepository) UpdateOrderStatus(id string, status string) error {
+	query := "UPDATE orders SET status = ? WHERE id = ?"
+
+	_, err := u.db.Exec(query, status, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -44,3 +44,13 @@ func (u *OrderService) GetOrderById(id string) (*entities.Orders, error) {
 
 	return order, nil
 }
+
+func (u *OrderService) UpdateOrderStatus(id string, status string) error {
+	err := u.orderRepository.UpdateOrderStatus(id, status)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
