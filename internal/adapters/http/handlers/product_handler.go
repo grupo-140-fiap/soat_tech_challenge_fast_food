@@ -25,7 +25,6 @@ func NewProductHandler(productService services.ProductService) *ProductHandler {
 // @Tags         products
 // @Param        id   path      string  true  "Product ID"
 // @Success      200  {object}  dto.ProductDTO
-// @Failure      500  {object}  map[string]interface{}
 // @Router       /products/{id} [get]
 func (h *ProductHandler) GetProductById(c *gin.Context) {
 	id := c.Param("id")
@@ -50,7 +49,6 @@ func (h *ProductHandler) GetProductById(c *gin.Context) {
 // @Tags         products
 // @Param        category  path      string  true  "Product Category"
 // @Success      200       {array}   entities.Product
-// @Failure      500      {object}  map[string]interface{}  "Failed on find product"
 // @Router       /products/category/{category} [get]
 func (h *ProductHandler) GetProductByCategory(c *gin.Context) {
 	category := c.Param("category")
@@ -77,8 +75,6 @@ func (h *ProductHandler) GetProductByCategory(c *gin.Context) {
 // @Produce      json
 // @Param        product  body      dto.ProductDTO  true  "Product data"
 // @Success      200      {object}  map[string]interface{}  "Product created successfully"
-// @Failure      400      {object}  map[string]interface{}  "Invalid input"
-// @Failure      500      {object}  map[string]interface{}  "Failed to create product"
 // @Router       /products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	var productDTO dto.ProductDTO
@@ -115,8 +111,6 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 // @Produce      json
 // @Param        product  body      dto.ProductDTO  true  "Product data"
 // @Success      200      {object}  map[string]interface{}  "Product updated successfully"
-// @Failure      400      {object}  map[string]interface{}  "Invalid input"
-// @Failure      500      {object}  map[string]interface{}  "Failed to update product"
 // @Router       /products [put]
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	var productDTO dto.ProductDTO
@@ -151,7 +145,6 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 // @Tags         products
 // @Param        id   path      string  true  "Product ID"
 // @Success      200  {object}  map[string]interface{}  "Product deleted successfully"
-// @Failure      500  {object}  map[string]interface{}  "Failed on find product"
 // @Router       /products/{id} [delete]
 func (h *ProductHandler) DeleteProductById(c *gin.Context) {
 	id := c.Param("id")

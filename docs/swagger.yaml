@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   dto.CreateCustomerDTO:
     properties:
@@ -61,8 +62,16 @@ definitions:
       updated_at:
         type: string
     type: object
+host: localhost:8080
 info:
   contact: {}
+  description: API para gerenciamento de pedidos e produtos de lanchonete do SOAT
+    Tech Challenge.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: SOAT Tech Challenge Fast Food API
+  version: "1.0"
 paths:
   /customers:
     post:
@@ -100,11 +109,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entities.Customer'
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
       summary: Get customer by CPF
       tags:
       - customers
@@ -125,16 +129,6 @@ paths:
       responses:
         "200":
           description: Product created successfully
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Invalid input
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Failed to create product
           schema:
             additionalProperties: true
             type: object
@@ -161,16 +155,6 @@ paths:
           schema:
             additionalProperties: true
             type: object
-        "400":
-          description: Invalid input
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Failed to update product
-          schema:
-            additionalProperties: true
-            type: object
       summary: Update an existing product
       tags:
       - products
@@ -186,11 +170,6 @@ paths:
       responses:
         "200":
           description: Product deleted successfully
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Failed on find product
           schema:
             additionalProperties: true
             type: object
@@ -210,11 +189,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.ProductDTO'
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
       summary: Get product by ID
       tags:
       - products
@@ -234,11 +208,6 @@ paths:
             items:
               $ref: '#/definitions/entities.Product'
             type: array
-        "500":
-          description: Failed on find product
-          schema:
-            additionalProperties: true
-            type: object
       summary: Get products by category
       tags:
       - products

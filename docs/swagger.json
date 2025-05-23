@@ -1,8 +1,17 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "API para gerenciamento de pedidos e produtos de lanchonete do SOAT Tech Challenge.",
+        "title": "SOAT Tech Challenge Fast Food API",
+        "contact": {},
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
     },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
     "paths": {
         "/customers": {
             "post": {
@@ -60,13 +69,6 @@
                         "schema": {
                             "$ref": "#/definitions/entities.Customer"
                         }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
                     }
                 }
             }
@@ -98,20 +100,6 @@
                 "responses": {
                     "200": {
                         "description": "Product updated successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to update product",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -149,20 +137,6 @@
                             "type": "object",
                             "additionalProperties": true
                         }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to create product",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
                     }
                 }
             }
@@ -192,13 +166,6 @@
                                 "$ref": "#/definitions/entities.Product"
                             }
                         }
-                    },
-                    "500": {
-                        "description": "Failed on find product",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
                     }
                 }
             }
@@ -225,13 +192,6 @@
                         "schema": {
                             "$ref": "#/definitions/dto.ProductDTO"
                         }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
                     }
                 }
             },
@@ -253,13 +213,6 @@
                 "responses": {
                     "200": {
                         "description": "Product deleted successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Failed on find product",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true

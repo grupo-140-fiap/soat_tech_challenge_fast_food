@@ -4,7 +4,7 @@ Este projeto é parte do **Tech Challenge - Fase 01**, e tem como objetivo desen
 
 ## 📚 Documentação da API
 
-A documentação interativa da API está disponível através do Swagger. Para acessá-la:
+A documentação da API está disponível através do Swagger. Para acessá-la:
 
 1. Inicie a aplicação com `go run cmd/server/main.go`
 2. Acesse [http://localhost:8080/swagger/index.html#/](http://localhost:8080/swagger/index.html#/) em seu navegador
@@ -25,11 +25,11 @@ curl -i -X GET http://localhost:8080/api/v1/customers/xxx.xxx.xxx-xx
 ```
 
 ### 🍔 Products
-- [ ] `POST /products` — Criar novo produto
-- [ ] `PUT /products`  — Atualizar produto existente
-- [ ] `DELETE /products/{id}` — Remover produto
-- [ ] `GET /products` — Listar todos os produtos
-- [ ] `GET /products?category={category}` — Listar produtos por categoria (`burger`, `side`, `drink`, `dessert`)
+- [x] `POST /products` — Criar novo produto
+- [x] `PUT /products`  — Atualizar produto existente
+- [x] `DELETE /products/{id}` — Remover produto
+- [x] `GET /products` — Listar todos os produtos
+- [x] `GET /products?category={category}` — Listar produtos por categoria (`burger`, `side`, `drink`, `dessert`)
 
 #### Exemple
 ```bash
@@ -44,11 +44,13 @@ curl -X DELETE http://localhost:8080/api/v1/products/1
 curl -X GET http://localhost:8080/api/v1/products/category/burger
 ```
 
-### 🧾 Orders (Checkout)
-- [ ] `POST /checkout` — Criar novo pedido (enviar para fila, simular pagamento)
+### 🧾 Orders
+- [ ] `POST /orders` — Criar novo pedido (enviar para fila, simular pagamento)
 - [ ] `GET /orders` — Listar todos os pedidos
 - [ ] `GET /orders/{id}` — Buscar detalhes do pedido por ID
 - [ ] `PATCH /orders/{id}/status` — Atualizar status do pedido (`received`, `preparing`, `ready`, `completed`)
+
+### 🧾 Pagementos
 
 ### 📊 Admin / Monitoramento
 - [ ] `GET /admin/orders/active` — Listar pedidos em andamento

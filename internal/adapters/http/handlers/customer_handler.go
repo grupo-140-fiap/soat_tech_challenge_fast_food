@@ -60,7 +60,6 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 // @Param        cpf   path      string  true  "Customer CPF"
 // @Produce      json
 // @Success      200  {object}  entities.Customer
-// @Failure      500  {object}  map[string]interface{}
 // @Router       /customers/{cpf} [get]
 func (h *CustomerHandler) GetCustomerByCpf(c *gin.Context) {
 	cpf := c.Param("cpf")
