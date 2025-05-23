@@ -6,7 +6,7 @@ type Product struct {
 	ID          uint64    `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
-	Price       string    `json:"price"`
+	Price       float32   `json:"price"`
 	Category    string    `json:"category"`
 	Image       string    `json:"image"`
 	CreatedAt   time.Time `json:"created_at"`
