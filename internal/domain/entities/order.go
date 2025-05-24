@@ -2,7 +2,7 @@ package entities
 
 import "time"
 
-type Orders struct {
+type Order struct {
 	ID         uint64      `json:"id"`
 	CustomerId uint64      `json:"customer_id"`
 	CPF        string      `json:"cpf"`

@@ -45,11 +45,11 @@ func (u *OrderRepository) CreateOrder(order *dto.OrderDTO) error {
 	return nil
 }
 
-func (u *OrderRepository) GetOrderById(id string) (*entities.Orders, error) {
+func (u *OrderRepository) GetOrderById(id string) (*entities.Order, error) {
 	query := "SELECT id, customer_id, cpf, status FROM orders WHERE id = ?"
 	row := u.db.QueryRow(query, id)
 
-	var orders entities.Orders
+	var orders entities.Order
 	err := row.Scan(&orders.ID, &orders.CustomerId, &orders.CPF, &orders.Status)
 
 	if err != nil {
@@ -74,7 +74,7 @@ func (u *OrderRepository) UpdateOrderStatus(id string, status string) error {
 	return nil
 }
 
-func (u *OrderRepository) GetActiveOrders() (*[]entities.Orders, error) {
+func (u *OrderRepository) GetActiveOrders() (*[]entities.Order, error) {
 	query := `
         SELECT o.id, o.customer_id, o.cpf, o.status, 
                oi.id, oi.product_id, oi.quantity, oi.price
@@ -95,10 +95,10 @@ func (u *OrderRepository) GetActiveOrders() (*[]entities.Orders, error) {
 	}
 	defer rows.Close()
 
-	orderMap := make(map[uint64]*entities.Orders)
+	orderMap := make(map[uint64]*entities.Order)
 
 	for rows.Next() {
-		var order entities.Orders
+		var order entities.Order
 		var customerID sql.NullInt64
 		var itemID sql.NullInt64
 		var productID sql.NullInt64
@@ -149,7 +149,7 @@ func (u *OrderRepository) GetActiveOrders() (*[]entities.Orders, error) {
 		return nil, fmt.Errorf("error iterating order rows: %w", err)
 	}
 
-	var orders []entities.Orders
+	var orders []entities.Order
 	for _, order := range orderMap {
 		orders = append(orders, *order)
 	}

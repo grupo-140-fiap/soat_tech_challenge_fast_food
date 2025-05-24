@@ -35,7 +35,7 @@ func (u *OrderService) CreateOrder(order *dto.OrderDTO) error {
 	return nil
 }
 
-func (u *OrderService) GetOrderById(id string) (*entities.Orders, error) {
+func (u *OrderService) GetOrderById(id string) (*entities.Order, error) {
 	order, err := u.orderRepository.GetOrderById(id)
 
 	if err != nil {

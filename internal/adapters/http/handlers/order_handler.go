@@ -22,6 +22,17 @@ func NewOrderHandler(orderService services.OrderService) *OrderHandler {
 	}
 }
 
+// CreateOrder godoc
+// @Summary      Create a new order
+// @Description  Creates a new order using the provided JSON payload
+// @Tags         orders
+// @Accept       json
+// @Produce      json
+// @Param        order  body      dto.OrderDTO  true  "Order data"
+// @Success      200    {object}  map[string]interface{}  "Order created successfully"
+// @Failure      400    {object}  map[string]interface{}  "Invalid input"
+// @Failure      500    {object}  map[string]interface{}  "Failed to create order"
+// @Router       /orders [post]
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	var orderDTO dto.OrderDTO
 
@@ -49,6 +60,15 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	})
 }
 
+// GetOrderById godoc
+// @Summary      Get order by ID
+// @Description  Retrieves an order by its unique identifier
+// @Tags         orders
+// @Produce      json
+// @Param        id   path      string  true  "Order ID"
+// @Success      200  {object}  entities.Order
+// @Failure      500  {object}  map[string]interface{}  "Failed on find order"
+// @Router       /orders/{id} [get]
 func (h *OrderHandler) GetOrderById(c *gin.Context) {
 	id := c.Param("id")
 
@@ -66,6 +86,18 @@ func (h *OrderHandler) GetOrderById(c *gin.Context) {
 	c.JSON(http.StatusOK, order)
 }
 
+// UpdateOrderStatus godoc
+// @Summary      Update order status
+// @Description  Updates the status of an existing order
+// @Tags         orders
+// @Accept       json
+// @Produce      json
+// @Param        id      path    string      true  "Order ID"
+// @Param        status  body    RequestBody  true  "New status"
+// @Success      200     {object}  map[string]interface{}  "Order status updated successfully"
+// @Failure      400     {object}  map[string]interface{}  "Invalid input"
+// @Failure      500     {object}  map[string]interface{}  "Failed on update order status"
+// @Router       /orders/{id}/status [put]
 func (h *OrderHandler) UpdateOrderStatus(c *gin.Context) {
 	var body RequestBody
 	var id = c.Param("id")

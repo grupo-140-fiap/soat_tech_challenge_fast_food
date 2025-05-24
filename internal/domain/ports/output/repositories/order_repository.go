@@ -7,7 +7,7 @@ import (
 
 type OrderRepository interface {
 	CreateOrder(order *dto.OrderDTO) error
-	GetOrderById(id string) (*entities.Orders, error)
+	GetOrderById(id string) (*entities.Order, error)
 	UpdateOrderStatus(id string, status string) error
-	GetActiveOrders() (*[]entities.Orders, error)
+	GetActiveOrders() (*[]entities.Order, error)
 }

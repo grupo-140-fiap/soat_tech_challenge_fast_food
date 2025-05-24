@@ -17,6 +17,14 @@ func NewAdminHandler(adminService services.AdminService) *AdminHandler {
 	}
 }
 
+// GetActiveOrders godoc
+// @Summary      Get active orders
+// @Description  Retrieve all active orders
+// @Tags         admin
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}  entities.Order
+// @Router       /admin/orders/active [get]
 func (h *AdminHandler) GetActiveOrders(c *gin.Context) {
 	orders, err := h.adminService.GetActiveOrders()
 	if err != nil {

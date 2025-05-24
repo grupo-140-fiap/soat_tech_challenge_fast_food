@@ -15,7 +15,7 @@ func NewAdminService(orderRepository repositories.OrderRepository) *AdminService
 	}
 }
 
-func (s *AdminService) GetActiveOrders() (*[]entities.Orders, error) {
+func (s *AdminService) GetActiveOrders() (*[]entities.Order, error) {
 	orders, err := s.orderRepository.GetActiveOrders()
 	if err != nil {
 		return nil, err
