@@ -2,10 +2,10 @@ package entities
 
 import "time"
 
-type OrdersItems struct {
+type OrderItem struct {
 	ID        uint64    `json:"id"`
-	OrderId   uint64    `json:"order_id"`
-	ProductId uint64    `json:"product_id"`
+	OrderID   uint64    `json:"order_id"`
+	ProductID uint64    `json:"product_id"`
 	Quantity  uint32    `json:"quantity"`
 	Price     float32   `json:"price"`
 	CreatedAt time.Time `json:"created_at"`
