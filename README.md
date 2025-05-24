@@ -50,6 +50,19 @@ curl -X GET http://localhost:8080/api/v1/products/category/burger
 - [ ] `GET /orders/{id}` — Buscar detalhes do pedido por ID
 - [ ] `PATCH /orders/{id}/status` — Atualizar status do pedido (`received`, `preparing`, `ready`, `completed`)
 
+#### Exemple
+```bash
+curl -X POST http://localhost:8080/api/v1/orders -H "Content-Type: application/json" -d '{"customer_id":1,"cpf":"xxx.xxx.xxx","status":"received", "items":[{"order_id":1,"product_id":1,"quantity":1, "price": 5.66},{"order_id":1,"product_id":2,"quantity":1, "price": 2.88}]}'
+
+curl -X GET 'http://localhost:8080/api/v1/orders/1'
+
+curl --location --request PATCH 'http://localhost:8080/api/v1/orders/3/status' \
+--header 'Content-Type: application/json' \
+--data '{
+    "status": "preparation"
+}'
+```
+
 ### 🧾 Pagementos
 
 ### 📊 Admin / Monitoramento
