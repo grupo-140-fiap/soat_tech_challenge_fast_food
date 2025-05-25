@@ -64,6 +64,8 @@ curl --location --request PATCH 'http://localhost:8080/api/v1/orders/3/status' \
 ```
 
 ### 🧾 Pagementos
+- [ ] `POST /checkout` — Criar a ordem de pagamento para o cliente
+
 
 ### 📊 Admin / Monitoramento
 - [ ] `GET /admin/orders/active` — Listar pedidos em andamento
