@@ -25,6 +25,7 @@ func SetupRouter() *gin.Engine {
 	setCustomerRouter(db, router)
 	setProductRouter(db, router)
 	setOrdersRouter(db, router)
+	setAdminRouter(db, router)
 	setSwagger(router)
 
 	return router
@@ -65,6 +66,15 @@ func setOrdersRouter(db *sql.DB, router *gin.Engine) {
 	v1.POST("/orders", orderHandler.CreateOrder)
 	v1.GET("/orders/:id", orderHandler.GetOrderById)
 	v1.PATCH("/orders/:id/status", orderHandler.UpdateOrderStatus)
+}
+
+func setAdminRouter(db *sql.DB, router *gin.Engine) {
+	orderRepository := persistance.NewOrderRepository(db)
+	adminService := services.NewAdminService(orderRepository)
+	adminHandler := handlers.NewAdminHandler(adminService)
+
+	v1 := router.Group("/api/v1")
+	v1.GET("/admin/orders/active", adminHandler.GetActiveOrders)
 }
 
 func setSwagger(router *gin.Engine) {

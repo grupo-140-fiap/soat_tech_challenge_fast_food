@@ -18,7 +18,7 @@ func NewOrderItemRepository(db *sql.DB) repositories.OrderItemRepository {
 func (u *OrderItemRepository) CreateOrderItem(item *dto.OrderItemDTO) error {
 	query := "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)"
 
-	_, err := u.db.Exec(query, item.OrderId, item.ProductId, item.Quantity, item.Price)
+	_, err := u.db.Exec(query, item.OrderID, item.ProductId, item.Quantity, item.Price)
 
 	if err != nil {
 		return err

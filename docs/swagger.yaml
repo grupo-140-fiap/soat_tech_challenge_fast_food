@@ -11,6 +11,34 @@ definitions:
       last_name:
         type: string
     type: object
+  dto.OrderDTO:
+    properties:
+      cpf:
+        type: string
+      customer_id:
+        type: integer
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/dto.OrderItemDTO'
+        type: array
+      status:
+        type: string
+    type: object
+  dto.OrderItemDTO:
+    properties:
+      id:
+        type: integer
+      order_id:
+        type: integer
+      price:
+        type: number
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
   dto.ProductDTO:
     properties:
       category:
@@ -43,6 +71,42 @@ definitions:
       updated_at:
         type: string
     type: object
+  entities.Order:
+    properties:
+      cpf:
+        type: string
+      created_at:
+        type: string
+      customer_id:
+        type: integer
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/entities.OrderItem'
+        type: array
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entities.OrderItem:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      order_id:
+        type: integer
+      price:
+        type: number
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      updated_at:
+        type: string
+    type: object
   entities.Product:
     properties:
       category:
@@ -58,8 +122,13 @@ definitions:
       name:
         type: string
       price:
-        type: string
+        type: number
       updated_at:
+        type: string
+    type: object
+  handlers.RequestBody:
+    properties:
+      status:
         type: string
     type: object
 host: localhost:8080
@@ -73,6 +142,23 @@ info:
   title: SOAT Tech Challenge Fast Food API
   version: "1.0"
 paths:
+  /admin/orders/active:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all active orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Order'
+            type: array
+      summary: Get active orders
+      tags:
+      - admin
   /customers:
     post:
       consumes:
@@ -112,6 +198,101 @@ paths:
       summary: Get customer by CPF
       tags:
       - customers
+  /orders:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new order using the provided JSON payload
+      parameters:
+      - description: Order data
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OrderDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to create order
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new order
+      tags:
+      - orders
+  /orders/{id}:
+    get:
+      description: Retrieves an order by its unique identifier
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Order'
+        "500":
+          description: Failed on find order
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get order by ID
+      tags:
+      - orders
+  /orders/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: Updates the status of an existing order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New status
+        in: body
+        name: status
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order status updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed on update order status
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update order status
+      tags:
+      - orders
   /products:
     post:
       consumes:
