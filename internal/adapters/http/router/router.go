@@ -2,11 +2,9 @@ package router
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mercadopago/sdk-go/pkg/config"
 	"github.com/mercadopago/sdk-go/pkg/order"
 
 	docs "github.com/samuellalvs/soat_tech_challenge_fast_food/docs"
@@ -15,6 +13,7 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/adapters/repositories/persistance"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/services"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/infrastructure/database/mysql"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/infrastructure/mercadopago"
 
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -28,15 +27,10 @@ func SetupRouter() *gin.Engine {
 		log.Fatalf("Erro ao conectar ao banco de dados: %v", err)
 	}
 
-	accessToken := "APP_USR-1789041333533573-052409-76d76765e02a3ab6b030ce2f6e3674bc-2454576917"
-
-	c, err := config.New(accessToken)
+	payClient, err := mercadopago.NewConnection()
 	if err != nil {
-		fmt.Println(err)
-		log.Fatalf("Erro ao conectar pagamento: %v", err)
+		log.Fatalf("Erro ao conectar ao mercadopago: %v", err)
 	}
-
-	payClient := order.NewClient(c)
 
 	setCustomerRouter(db, router)
 	setProductRouter(db, router)

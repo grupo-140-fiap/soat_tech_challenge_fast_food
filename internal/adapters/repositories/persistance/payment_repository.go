@@ -18,15 +18,14 @@ func NewPaymentRepository(payClient order.Client) repositories.PaymentRepository
 }
 
 func (u *PaymentRepository) CreatePayment(payment *dto.PaymentDTO) error {
-
 	request := order.Request{
 		Type:              "online",
-		TotalAmount:       "1.00",
+		TotalAmount:       payment.Amount,
 		ExternalReference: "ext_ref_1234",
 		Transactions: &order.TransactionRequest{
 			Payments: []order.PaymentRequest{
 				{
-					Amount: "1.00",
+					Amount: payment.Amount,
 					PaymentMethod: &order.PaymentMethodRequest{
 						ID:   "pix",
 						Type: "bank_transfer",
@@ -35,7 +34,7 @@ func (u *PaymentRepository) CreatePayment(payment *dto.PaymentDTO) error {
 			},
 		},
 		Payer: &order.PayerRequest{
-			Email: "test@testuser.com",
+			Email: payment.Email,
 		},
 	}
 
@@ -44,8 +43,10 @@ func (u *PaymentRepository) CreatePayment(payment *dto.PaymentDTO) error {
 		return err
 	}
 
-	fmt.Println(resource)
-	// resource.Transactions.Payments[0].PaymentMethod.TicketURL
+	for _, paymentUrl := range resource.Transactions.Payments {
+		payment.QrcodeUrl = paymentUrl.PaymentMethod.TicketURL
+		return nil
+	}
 
-	return nil
+	return fmt.Errorf("Error payment mercado pago")
 }

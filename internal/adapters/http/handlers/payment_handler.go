@@ -42,5 +42,6 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Payment created successfully",
+		"Qrcode":  paymentDTO.QrcodeUrl,
 	})
 }
