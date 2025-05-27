@@ -66,6 +66,16 @@ curl --location --request PATCH 'http://localhost:8080/api/v1/orders/3/status' \
 ### 🧾 Pagementos
 - [ ] `POST /checkout` — Criar a ordem de pagamento para o cliente
 
+#### Exemple
+```bash
+curl --location 'http://localhost:8080/api/v1/checkout' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "test@testuser.com",
+    "cpf": "xxx.xxx.xxx",
+    "amount": "2.56"
+}'
+```
 
 ### 📊 Admin / Monitoramento
 - [ ] `GET /admin/orders/active` — Listar pedidos em andamento
