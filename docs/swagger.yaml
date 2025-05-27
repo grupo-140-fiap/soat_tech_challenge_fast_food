@@ -198,6 +198,21 @@ paths:
       summary: Get customer by CPF
       tags:
       - customers
+  /health:
+    get:
+      description: Verifica se a API está funcionando corretamente
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check endpoint
+      tags:
+      - health
   /orders:
     post:
       consumes:

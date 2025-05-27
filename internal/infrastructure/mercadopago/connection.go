@@ -1,6 +1,7 @@
 package mercadopago
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -10,26 +11,24 @@ import (
 )
 
 func NewConnection() (order.Client, error) {
-	//err := godotenv.Load()
-	err := godotenv.Load("../../.env")
-	if err != nil {
-		log.Fatal("Could not load the .env file, using system environment variables")
+	if err := godotenv.Load(); err != nil {
+		log.Println("Arquivo .env não encontrado, usando variáveis de ambiente do sistema")
 	}
 
-	// Get the token from the environment variables
+	// Obtém o token das variáveis de ambiente (pode vir do .env ou do sistema)
 	accessToken := os.Getenv("ACCESSTOKEN")
 	if accessToken == "" {
-		log.Fatal("ACCESSTOKEN not found in .env")
+		return nil, fmt.Errorf("ACCESSTOKEN não encontrado nas variáveis de ambiente")
 	}
 
 	c, err := config.New(accessToken)
 	if err != nil {
-		log.Fatalf("Erro ao conectar pagamento: %v", err)
+		return nil, fmt.Errorf("erro ao configurar cliente do MercadoPago: %w", err)
 	}
 
 	payClient := order.NewClient(c)
 
-	log.Println("Database connection successfully established")
+	log.Println("Conexão com o MercadoPago estabelecida com sucesso")
 
 	return payClient, nil
 }

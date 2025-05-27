@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mercadopago/sdk-go/pkg/order"
 
-	docs "github.com/samuellalvs/soat_tech_challenge_fast_food/docs"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/docs"
 
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/adapters/http/handlers"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/adapters/repositories/persistance"
@@ -32,6 +32,7 @@ func SetupRouter() *gin.Engine {
 		log.Fatalf("Erro ao conectar ao mercadopago: %v", err)
 	}
 
+	setHealthRouter(router)
 	setCustomerRouter(db, router)
 	setProductRouter(db, router)
 	setOrdersRouter(db, router)
@@ -40,6 +41,11 @@ func SetupRouter() *gin.Engine {
 	setSwagger(router)
 
 	return router
+}
+
+func setHealthRouter(router *gin.Engine) {
+	healthHandler := handlers.NewHealthHandler()
+	router.GET("/health", healthHandler.HealthCheck)
 }
 
 func setCustomerRouter(db *sql.DB, router *gin.Engine) {

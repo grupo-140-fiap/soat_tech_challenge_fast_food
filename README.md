@@ -79,3 +79,75 @@ curl --location 'http://localhost:8080/api/v1/checkout' \
 
 ### 📊 Admin / Monitoramento
 - [ ] `GET /admin/orders/active` — Listar pedidos em andamento
+
+## Como Contribuir
+
+### Pré-requisitos
+
+- Go 1.21 ou superior
+- Docker e Docker Compose
+- MySQL 8.0
+- Swagger CLI (para documentação da API)
+
+### Configuração do Ambiente
+
+1. Clone o repositório:
+```bash
+git clone [URL_DO_REPOSITORIO]
+cd soat_tech_challenge_fast_food
+```
+
+2. Configure as variáveis de ambiente:
+   - Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+```env
+# Banco de Dados
+DB_USER=root
+DB_PASSWORD=root
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=fast_food_db
+
+# MercadoPago
+ACCESSTOKEN=seu_token_aqui
+
+# Servidor
+PORT=8080
+```
+
+3. Gere a documentação Swagger:
+```bash
+swag init -g cmd/server/main.go
+```
+
+### Executando com Docker
+
+1. Construa e inicie os containers:
+```bash
+docker compose up --build
+```
+
+2. Para parar os containers:
+```bash
+docker compose down
+```
+
+### Estrutura do Projeto
+
+O projeto segue a arquitetura hexagonal com as seguintes camadas:
+
+```
+.
+├── cmd/
+│   └── server/          
+├── internal/
+│   ├── domain/        
+│   ├── application/    
+│   ├── ports/          
+│   └── adapters/       
+│       ├── http/      
+│       └── repository/
+├── docs/               
+├── Dockerfile         
+├── docker-compose.yml 
+└── .env             
+```

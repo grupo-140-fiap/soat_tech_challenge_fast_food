@@ -99,6 +99,29 @@
                 }
             }
         },
+        "/health": {
+            "get": {
+                "description": "Verifica se a API está funcionando corretamente",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check endpoint",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "post": {
                 "description": "Creates a new order using the provided JSON payload",

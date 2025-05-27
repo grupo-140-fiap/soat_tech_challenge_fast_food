@@ -5,34 +5,38 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
 
 func NewConnection() (*sql.DB, error) {
-	err := godotenv.Load()
-	
-	if err != nil {
-		log.Println("Warning: Could not load the .env file, using system environment variables")
+	// Tenta carregar o arquivo .env, se não existir, usa as variáveis do sistema
+	if err := godotenv.Load(); err != nil {
+		log.Println("Arquivo .env não encontrado, usando variáveis de ambiente do sistema")
 	}
 
-	customer := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	database := os.Getenv("DB_NAME")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", customer, password, host, port, database)
+	if dbUser == "" || dbPassword == "" || dbHost == "" || dbPort == "" || dbName == "" {
+		return nil, fmt.Errorf("variáveis de ambiente do banco de dados não configuradas corretamente")
+	}
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPassword, dbHost, dbPort, dbName)
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
-		return nil, fmt.Errorf("error opening database connection: %w", err)
+		return nil, fmt.Errorf("erro ao abrir conexão com o banco de dados: %w", err)
 	}
 
 	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("error connecting to the database: %w", err)
+		return nil, fmt.Errorf("erro ao conectar ao banco de dados: %w", err)
 	}
 
-	log.Println("Database connection successfully established")
+	log.Println("Conexão com o banco de dados estabelecida com sucesso")
 	return db, nil
 }
