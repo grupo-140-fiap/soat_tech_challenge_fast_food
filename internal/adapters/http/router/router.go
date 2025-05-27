@@ -5,11 +5,16 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mercadopago/sdk-go/pkg/order"
+
 	docs "github.com/samuellalvs/soat_tech_challenge_fast_food/docs"
+
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/adapters/http/handlers"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/adapters/repositories/persistance"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/services"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/infrastructure/database/mysql"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/infrastructure/mercadopago"
+
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -22,9 +27,15 @@ func SetupRouter() *gin.Engine {
 		log.Fatalf("Erro ao conectar ao banco de dados: %v", err)
 	}
 
+	payClient, err := mercadopago.NewConnection()
+	if err != nil {
+		log.Fatalf("Erro ao conectar ao mercadopago: %v", err)
+	}
+
 	setCustomerRouter(db, router)
 	setProductRouter(db, router)
 	setOrdersRouter(db, router)
+	setPaymentRouter(payClient, router)
 	setAdminRouter(db, router)
 	setSwagger(router)
 
@@ -66,6 +77,15 @@ func setOrdersRouter(db *sql.DB, router *gin.Engine) {
 	v1.POST("/orders", orderHandler.CreateOrder)
 	v1.GET("/orders/:id", orderHandler.GetOrderById)
 	v1.PATCH("/orders/:id/status", orderHandler.UpdateOrderStatus)
+}
+
+func setPaymentRouter(payClient order.Client, router *gin.Engine) {
+	paymentRepository := persistance.NewPaymentRepository(payClient)
+	paymentService := services.NewPaymentService(paymentRepository)
+	paymentHandler := handlers.NewPaymentHandler(paymentService)
+
+	v1 := router.Group("/api/v1")
+	v1.POST("/checkout", paymentHandler.CreatePayment)
 }
 
 func setAdminRouter(db *sql.DB, router *gin.Engine) {
