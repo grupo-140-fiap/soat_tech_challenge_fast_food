@@ -45,10 +45,10 @@ curl -X GET http://localhost:8080/api/v1/products/category/burger
 ```
 
 ### 🧾 Orders
-- [ ] `POST /orders` — Criar novo pedido (enviar para fila, simular pagamento)
+- [x] `POST /orders` — Criar novo pedido (enviar para fila, simular pagamento)
 - [ ] `GET /orders` — Listar todos os pedidos
-- [ ] `GET /orders/{id}` — Buscar detalhes do pedido por ID
-- [ ] `PATCH /orders/{id}/status` — Atualizar status do pedido (`received`, `preparing`, `ready`, `completed`)
+- [x] `GET /orders/{id}` — Buscar detalhes do pedido por ID
+- [x] `PATCH /orders/{id}/status` — Atualizar status do pedido (`received`, `preparing`, `ready`, `completed`)
 
 #### Exemple
 ```bash
@@ -79,6 +79,3 @@ curl --location 'http://localhost:8080/api/v1/checkout' \
 
 ### 📊 Admin / Monitoramento
 - [ ] `GET /admin/orders/active` — Listar pedidos em andamento
-
-### 📦 Categories (Opcional)
-- [ ] `GET /categories` — Listar categorias de produtos (`burger`, `side`, `drink`, `dessert`)
