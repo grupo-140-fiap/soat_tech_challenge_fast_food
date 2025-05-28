@@ -22,6 +22,21 @@ func NewOrderHandler(orderService services.OrderService) *OrderHandler {
 	}
 }
 
+func (h *OrderHandler) GetOrders(c *gin.Context) {
+	orders, err := h.orderService.GetOrders()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed on find orders",
+			"error":   err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, orders)
+}
+
 // CreateOrder godoc
 // @Summary      Create a new order
 // @Description  Creates a new order using the provided JSON payload

@@ -18,6 +18,25 @@ func NewOrderRepository(db *sql.DB) repositories.OrderRepository {
 	return &OrderRepository{db: db}
 }
 
+func (u *OrderRepository) GetOrders() ([]entities.Order, error) {
+	rows, err := u.db.Query("SELECT id, customer_id, cpf, status, created_at, updated_at FROM orders ")
+	if err != nil {
+		return nil, fmt.Errorf("orders not found")
+	}
+	defer rows.Close()
+
+	var orders []entities.Order
+	for rows.Next() {
+		var o entities.Order
+		if err := rows.Scan(&o.ID, &o.CustomerId, &o.CPF, &o.Status, &o.CreatedAt, &o.UpdatedAt); err != nil {
+			return nil, err
+		}
+		orders = append(orders, o)
+	}
+
+	return orders, nil
+}
+
 func (u *OrderRepository) CreateOrder(order *dto.OrderDTO) error {
 	// Prepare the INSERT statement
 	stmt, err := u.db.Prepare("INSERT INTO orders (customer_id, cpf, status) VALUES (?, ?, ?)")

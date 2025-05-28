@@ -18,6 +18,16 @@ func NewOrderService(orderRepository repositories.OrderRepository, orderItemRepo
 	}
 }
 
+func (u *OrderService) GetOrders() ([]entities.Order, error) {
+	orders, err := u.orderRepository.GetOrders()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return orders, nil
+}
+
 func (u *OrderService) CreateOrder(order *dto.OrderDTO) error {
 	err := u.orderRepository.CreateOrder(order)
 
