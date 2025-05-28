@@ -6,6 +6,7 @@ import (
 )
 
 type OrderService interface {
+	GetOrders() ([]entities.Order, error)
 	CreateOrder(order *dto.OrderDTO) error
 	GetOrderById(id string) (*entities.Order, error)
 	UpdateOrderStatus(id string, status string) error

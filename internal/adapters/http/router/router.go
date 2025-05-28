@@ -80,6 +80,7 @@ func setOrdersRouter(db *sql.DB, router *gin.Engine) {
 	orderHandler := handlers.NewOrderHandler(orderService)
 
 	v1 := router.Group("/api/v1")
+	v1.GET("/orders", orderHandler.GetOrders)
 	v1.POST("/orders", orderHandler.CreateOrder)
 	v1.GET("/orders/:id", orderHandler.GetOrderById)
 	v1.PATCH("/orders/:id/status", orderHandler.UpdateOrderStatus)

@@ -23,7 +23,7 @@ go.work
 go.work.sum
 
 # config
-#/.env
+.env
 
 # Test directories
 /test/mocks
