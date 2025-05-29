@@ -11,7 +11,6 @@ import (
 )
 
 func NewConnection() (*sql.DB, error) {
-	// Tenta carregar o arquivo .env, se não existir, usa as variáveis do sistema
 	if err := godotenv.Load(); err != nil {
 		log.Println("Arquivo .env não encontrado, usando variáveis de ambiente do sistema")
 	}

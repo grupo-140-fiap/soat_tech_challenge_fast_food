@@ -55,7 +55,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "customer"
+                    "customers"
                 ],
                 "summary": "Create new customer",
                 "parameters": [
@@ -100,29 +100,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/entities.Customer"
-                        }
-                    }
-                }
-            }
-        },
-        "/health": {
-            "get": {
-                "description": "Verifica se a API está funcionando corretamente",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "Health check endpoint",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
                         }
                     }
                 }
@@ -264,6 +241,48 @@ const docTemplate = `{
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/payments": {
+            "post": {
+                "description": "Create a new payment using MercadoPago integration",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Create a new payment",
+                "parameters": [
+                    {
+                        "description": "Payment data",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PaymentDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Qrcode": {
+                                    "type": "string"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 }
@@ -423,16 +442,20 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "cpf": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123.456.789-00"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "joao.silva@email.com"
                 },
                 "first_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "João"
                 },
                 "last_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Silva"
                 }
             }
         },
@@ -479,26 +502,49 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.PaymentDTO": {
+            "type": "object",
+            "properties": {
+                "QrcodeUrl": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "string"
+                },
+                "cpf": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.ProductDTO": {
             "type": "object",
             "properties": {
                 "category": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Lanche"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Delicioso cheeseburger com queijo cheddar e molho especial"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "image": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://example.com/images/cheeseburger.png"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Cheeseburger"
                 },
                 "price": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "19.90"
                 }
             }
         },
@@ -506,25 +552,32 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "cpf": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123.456.789-00"
                 },
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-06-01T12:00:00Z"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "joao.silva@email.com"
                 },
                 "first_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "João"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "last_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Silva"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-06-02T15:30:00Z"
                 }
             }
         },
@@ -532,16 +585,20 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "cpf": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123.456.789-00"
                 },
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-06-01T12:00:00Z"
                 },
                 "customer_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 123
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "items": {
                     "type": "array",
@@ -550,10 +607,12 @@ const docTemplate = `{
                     }
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "pending"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-06-01T12:30:00Z"
                 }
             }
         },
@@ -561,25 +620,32 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-06-01T12:00:00Z"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "order_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
                 "price": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 19.99
                 },
                 "product_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 200
                 },
                 "quantity": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 2
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-06-01T12:30:00Z"
                 }
             }
         },
@@ -587,28 +653,36 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "category": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Sandwich"
                 },
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-06-01T12:00:00Z"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Delicious cheeseburger with cheddar and pickles"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "image": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://example.com/images/cheeseburger.png"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Cheeseburger"
                 },
                 "price": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 12.99
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-06-01T12:00:00Z"
                 }
             }
         },

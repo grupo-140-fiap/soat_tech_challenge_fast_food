@@ -3,12 +3,16 @@ definitions:
   dto.CreateCustomerDTO:
     properties:
       cpf:
+        example: 123.456.789-00
         type: string
       email:
+        example: joao.silva@email.com
         type: string
       first_name:
+        example: João
         type: string
       last_name:
+        example: Silva
         type: string
     type: object
   dto.OrderDTO:
@@ -39,91 +43,136 @@ definitions:
       quantity:
         type: integer
     type: object
+  dto.PaymentDTO:
+    properties:
+      QrcodeUrl:
+        type: string
+      amount:
+        type: string
+      cpf:
+        type: string
+      email:
+        type: string
+    type: object
   dto.ProductDTO:
     properties:
       category:
+        example: Lanche
         type: string
       description:
+        example: Delicioso cheeseburger com queijo cheddar e molho especial
         type: string
       id:
+        example: 1
         type: integer
       image:
+        example: https://example.com/images/cheeseburger.png
         type: string
       name:
+        example: Cheeseburger
         type: string
       price:
+        example: "19.90"
         type: string
     type: object
   entities.Customer:
     properties:
       cpf:
+        example: 123.456.789-00
         type: string
       created_at:
+        example: "2024-06-01T12:00:00Z"
         type: string
       email:
+        example: joao.silva@email.com
         type: string
       first_name:
+        example: João
         type: string
       id:
+        example: 1
         type: integer
       last_name:
+        example: Silva
         type: string
       updated_at:
+        example: "2024-06-02T15:30:00Z"
         type: string
     type: object
   entities.Order:
     properties:
       cpf:
+        example: 123.456.789-00
         type: string
       created_at:
+        example: "2024-06-01T12:00:00Z"
         type: string
       customer_id:
+        example: 123
         type: integer
       id:
+        example: 1
         type: integer
       items:
         items:
           $ref: '#/definitions/entities.OrderItem'
         type: array
       status:
+        example: pending
         type: string
       updated_at:
+        example: "2024-06-01T12:30:00Z"
         type: string
     type: object
   entities.OrderItem:
     properties:
       created_at:
+        example: "2024-06-01T12:00:00Z"
         type: string
       id:
+        example: 1
         type: integer
       order_id:
+        example: 100
         type: integer
       price:
+        example: 19.99
         type: number
       product_id:
+        example: 200
         type: integer
       quantity:
+        example: 2
         type: integer
       updated_at:
+        example: "2024-06-01T12:30:00Z"
         type: string
     type: object
   entities.Product:
     properties:
       category:
+        example: Sandwich
         type: string
       created_at:
+        example: "2024-06-01T12:00:00Z"
         type: string
       description:
+        example: Delicious cheeseburger with cheddar and pickles
         type: string
       id:
+        example: 1
         type: integer
       image:
+        example: https://example.com/images/cheeseburger.png
         type: string
       name:
+        example: Cheeseburger
         type: string
       price:
+        example: 12.99
         type: number
       updated_at:
+        example: "2024-06-01T12:00:00Z"
         type: string
     type: object
   handlers.RequestBody:
@@ -178,7 +227,7 @@ paths:
           description: OK
       summary: Create new customer
       tags:
-      - customer
+      - customers
   /customers/{cpf}:
     get:
       description: Retrieves a customer by their CPF (Cadastro de Pessoas Físicas).
@@ -198,21 +247,6 @@ paths:
       summary: Get customer by CPF
       tags:
       - customers
-  /health:
-    get:
-      description: Verifica se a API está funcionando corretamente
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Health check endpoint
-      tags:
-      - health
   /orders:
     post:
       consumes:
@@ -308,6 +342,33 @@ paths:
       summary: Update order status
       tags:
       - orders
+  /payments:
+    post:
+      consumes:
+      - application/json
+      description: Create a new payment using MercadoPago integration
+      parameters:
+      - description: Payment data
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PaymentDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              Qrcode:
+                type: string
+              message:
+                type: string
+            type: object
+      summary: Create a new payment
+      tags:
+      - payment
   /products:
     post:
       consumes:
