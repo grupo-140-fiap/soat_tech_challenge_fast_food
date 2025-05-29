@@ -59,6 +59,13 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		return
 	}
 
+	if len(orderDTO.Items) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Invalid input, no items",
+		})
+		return
+	}
+
 	err := h.orderService.CreateOrder(&orderDTO)
 
 	if err != nil {
@@ -73,6 +80,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Order created successfully",
 	})
+
 }
 
 // GetOrderById godoc
