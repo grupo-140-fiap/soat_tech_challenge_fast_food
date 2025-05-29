@@ -18,6 +18,15 @@ func NewPaymentHandler(paymentService services.PaymentService) *PaymentHandler {
 	}
 }
 
+// CreatePayment godoc
+// @Summary      Create a new payment
+// @Description  Create a new payment using MercadoPago integration
+// @Tags         payment
+// @Accept       json
+// @Produce      json
+// @Param        payment  body      dto.PaymentDTO  true  "Payment data"
+// @Success      200      {object}  object{message=string,Qrcode=string}
+// @Router       /payments [post]
 func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 	var paymentDTO dto.PaymentDTO
 

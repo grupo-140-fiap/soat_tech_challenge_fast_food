@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"net/http"
-    "github.com/gin-gonic/gin"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/input/services"
+
+	"github.com/gin-gonic/gin"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/input/services"
 )
 
 type CustomerHandler struct {
@@ -20,7 +21,7 @@ func NewCustomerHandler(customerService services.CustomerService) *CustomerHandl
 // CreateCustomer godoc
 // @Summary Create new customer
 // @Description Create new customer
-// @Tags customer
+// @Tags customers
 // @Accept json
 // @Produce json
 // @Param customer body dto.CreateCustomerDTO true "customer"
@@ -42,7 +43,7 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Failed to create customer",
-			"error": err.Error(),
+			"error":   err.Error(),
 		})
 
 		return
@@ -69,7 +70,7 @@ func (h *CustomerHandler) GetCustomerByCpf(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Failed on find customer",
-			"error": err.Error(),
+			"error":   err.Error(),
 		})
 
 		return

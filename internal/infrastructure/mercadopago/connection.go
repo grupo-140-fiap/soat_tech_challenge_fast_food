@@ -15,7 +15,6 @@ func NewConnection() (order.Client, error) {
 		log.Println("Arquivo .env não encontrado, usando variáveis de ambiente do sistema")
 	}
 
-	// Obtém o token das variáveis de ambiente (pode vir do .env ou do sistema)
 	accessToken := os.Getenv("ACCESSTOKEN")
 	if accessToken == "" {
 		return nil, fmt.Errorf("ACCESSTOKEN não encontrado nas variáveis de ambiente")
