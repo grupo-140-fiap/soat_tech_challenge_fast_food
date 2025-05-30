@@ -2,6 +2,14 @@
 
 Este projeto é parte do **Tech Challenge - Fase 01**, e tem como objetivo desenvolver um sistema de controle de pedidos para uma lanchonete em expansão, focado em autoatendimento, gestão de pedidos e controle administrativo.
 
+## 📚 Documentação do sistema (DDD) com Event Storming
+
+As versões da documentação do DDD estão disponíveis através dos links do Miro:
+
+- [DDD - Versão 1 - Iniciação](https://miro.com/app/board/uXjVIDaCt8I=/)
+- [DDD - Versão 2 - Evolução](https://miro.com/app/board/uXjVI26PK8k=/)
+- [DDD - Versão 3 - Final](https://miro.com/app/board/uXjVIzM5S5Q=/)
+
 ## 📚 Documentação da API
 
 A documentação da API está disponível através do Swagger. Para acessá-la:
