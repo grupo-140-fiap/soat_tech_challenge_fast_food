@@ -54,7 +54,7 @@ func (u *ProductRepository) GetProductByCategory(category string) ([]entities.Pr
 	}
 	defer rows.Close()
 
-	var products []entities.Product
+	var products []entities.Product = make([]entities.Product, 0)
 	for rows.Next() {
 		var p entities.Product
 		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Category); err != nil {
