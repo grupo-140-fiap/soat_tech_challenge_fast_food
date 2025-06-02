@@ -34,10 +34,9 @@ func TestProductRepository_CreateProduct_Success(t *testing.T) {
 		Price:       "15.99",
 		Category:    "main",
 	}
-
-	expectedQuery := "INSERT INTO products \\(name, description, price, category\\) VALUES \\(\\?, \\?, \\?, \\?\\)"
+	expectedQuery := "INSERT INTO products \\(name, description, price, category, image_url\\) VALUES \\(\\?, \\?, \\?, \\?, \\?\\)"
 	mock.ExpectExec(expectedQuery).
-		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category).
+		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category, productDTO.ImageUrl).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	repo := NewProductRepository(db)
@@ -59,12 +58,11 @@ func TestProductRepository_CreateProduct_DatabaseError(t *testing.T) {
 		Price:       "15.99",
 		Category:    "main",
 	}
-
-	expectedQuery := "INSERT INTO products \\(name, description, price, category\\) VALUES \\(\\?, \\?, \\?, \\?\\)"
+	expectedQuery := "INSERT INTO products \\(name, description, price, category, image_url\\) VALUES \\(\\?, \\?, \\?, \\?, \\?\\)"
 	expectedError := errors.New("database connection failed")
 
 	mock.ExpectExec(expectedQuery).
-		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category).
+		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category, productDTO.ImageUrl).
 		WillReturnError(expectedError)
 
 	repo := NewProductRepository(db)
@@ -80,7 +78,6 @@ func TestProductRepository_GetProductById_Success(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
-
 	productID := "1"
 	expectedProduct := &entities.Product{
 		ID:          1,
@@ -88,13 +85,14 @@ func TestProductRepository_GetProductById_Success(t *testing.T) {
 		Description: "Delicious burger",
 		Price:       15.99,
 		Category:    "main",
+		ImageUrl:    "http://example.com/burger.jpg",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
 
-	expectedQuery := "SELECT id, name, description, price, category FROM products WHERE id = \\?"
-	rows := sqlmock.NewRows([]string{"id", "name", "description", "price", "category"}).
-		AddRow(expectedProduct.ID, expectedProduct.Name, expectedProduct.Description, expectedProduct.Price, expectedProduct.Category)
+	expectedQuery := "SELECT id, name, description, price, category, image_url FROM products WHERE id = \\?"
+	rows := sqlmock.NewRows([]string{"id", "name", "description", "price", "category", "image_url"}).
+		AddRow(expectedProduct.ID, expectedProduct.Name, expectedProduct.Description, expectedProduct.Price, expectedProduct.Category, expectedProduct.ImageUrl)
 
 	mock.ExpectQuery(expectedQuery).
 		WithArgs(productID).
@@ -103,7 +101,6 @@ func TestProductRepository_GetProductById_Success(t *testing.T) {
 	repo := NewProductRepository(db)
 
 	product, err := repo.GetProductById(productID)
-
 	assert.NoError(t, err)
 	assert.NotNil(t, product)
 	assert.Equal(t, expectedProduct.ID, product.ID)
@@ -111,6 +108,7 @@ func TestProductRepository_GetProductById_Success(t *testing.T) {
 	assert.Equal(t, expectedProduct.Description, product.Description)
 	assert.Equal(t, expectedProduct.Price, product.Price)
 	assert.Equal(t, expectedProduct.Category, product.Category)
+	assert.Equal(t, expectedProduct.ImageUrl, product.ImageUrl)
 	assert.NoError(t, mock.ExpectationsWereMet())
 }
 
@@ -118,9 +116,8 @@ func TestProductRepository_GetProductById_NotFound(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
-
 	productID := "999"
-	expectedQuery := "SELECT id, name, description, price, category FROM products WHERE id = \\?"
+	expectedQuery := "SELECT id, name, description, price, category, image_url FROM products WHERE id = \\?"
 
 	mock.ExpectQuery(expectedQuery).
 		WithArgs(productID).
@@ -142,7 +139,7 @@ func TestProductRepository_GetProductById_DatabaseError(t *testing.T) {
 	defer db.Close()
 
 	productID := "1"
-	expectedQuery := "SELECT id, name, description, price, category FROM products WHERE id = \\?"
+	expectedQuery := "SELECT id, name, description, price, category, image_url FROM products WHERE id = \\?"
 	expectedError := errors.New("database connection failed")
 
 	mock.ExpectQuery(expectedQuery).
@@ -172,6 +169,7 @@ func TestProductRepository_GetProductByCategory_Success(t *testing.T) {
 			Description: "Delicious burger",
 			Price:       15.99,
 			Category:    "main",
+			ImageUrl:    "http://example.com/burger.jpg",
 		},
 		{
 			ID:          2,
@@ -179,13 +177,14 @@ func TestProductRepository_GetProductByCategory_Success(t *testing.T) {
 			Description: "Tasty pizza",
 			Price:       25.50,
 			Category:    "main",
+			ImageUrl:    "http://example.com/pizza.jpg",
 		},
 	}
 
-	expectedQuery := "SELECT id, name, description, price, category FROM products WHERE category = \\?"
-	rows := sqlmock.NewRows([]string{"id", "name", "description", "price", "category"}).
-		AddRow(expectedProducts[0].ID, expectedProducts[0].Name, expectedProducts[0].Description, expectedProducts[0].Price, expectedProducts[0].Category).
-		AddRow(expectedProducts[1].ID, expectedProducts[1].Name, expectedProducts[1].Description, expectedProducts[1].Price, expectedProducts[1].Category)
+	expectedQuery := "SELECT id, name, description, price, category, image_url FROM products WHERE category = \\?"
+	rows := sqlmock.NewRows([]string{"id", "name", "description", "price", "category", "image_url"}).
+		AddRow(expectedProducts[0].ID, expectedProducts[0].Name, expectedProducts[0].Description, expectedProducts[0].Price, expectedProducts[0].Category, expectedProducts[0].ImageUrl).
+		AddRow(expectedProducts[1].ID, expectedProducts[1].Name, expectedProducts[1].Description, expectedProducts[1].Price, expectedProducts[1].Category, expectedProducts[1].ImageUrl)
 
 	mock.ExpectQuery(expectedQuery).
 		WithArgs(category).
@@ -209,8 +208,8 @@ func TestProductRepository_GetProductByCategory_EmptyResult(t *testing.T) {
 	defer db.Close()
 
 	category := "nonexistent"
-	expectedQuery := "SELECT id, name, description, price, category FROM products WHERE category = \\?"
-	rows := sqlmock.NewRows([]string{"id", "name", "description", "price", "category"})
+	expectedQuery := "SELECT id, name, description, price, category, image_url FROM products WHERE category = \\?"
+	rows := sqlmock.NewRows([]string{"id", "name", "description", "price", "category", "image_url"})
 
 	mock.ExpectQuery(expectedQuery).
 		WithArgs(category).
@@ -232,7 +231,7 @@ func TestProductRepository_GetProductByCategory_DatabaseError(t *testing.T) {
 	defer db.Close()
 
 	category := "main"
-	expectedQuery := "SELECT id, name, description, price, category FROM products WHERE category = \\?"
+	expectedQuery := "SELECT id, name, description, price, category, image_url FROM products WHERE category = \\?"
 	expectedError := errors.New("products with CATEGORY main not found")
 
 	mock.ExpectQuery(expectedQuery).
@@ -253,11 +252,10 @@ func TestProductRepository_GetProductByCategory_ScanError(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
-
 	category := "main"
-	expectedQuery := "SELECT id, name, description, price, category FROM products WHERE category = \\?"
-	rows := sqlmock.NewRows([]string{"id", "name", "description", "price", "category"}).
-		AddRow("invalid_id", "Burger", "Delicious burger", 15.99, "main")
+	expectedQuery := "SELECT id, name, description, price, category, image_url FROM products WHERE category = \\?"
+	rows := sqlmock.NewRows([]string{"id", "name", "description", "price", "category", "image_url"}).
+		AddRow("invalid_id", "Burger", "Delicious burger", 15.99, "main", "http://example.com/burger.jpg")
 
 	mock.ExpectQuery(expectedQuery).
 		WithArgs(category).
@@ -276,23 +274,23 @@ func TestProductRepository_UpdateProduct_Success(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
-
 	productDTO := &dto.ProductDTO{
-		ID:          1,
 		Name:        "Updated Burger",
 		Description: "Updated delicious burger",
 		Price:       "18.99",
 		Category:    "main",
+		ImageUrl:    "http://example.com/burger.jpg",
 	}
 
-	expectedQuery := "UPDATE products SET name = \\?, description = \\?, price = \\?, category = \\? WHERE id = \\?"
+	productID := 1
+	expectedQuery := "UPDATE products SET name = \\?, description = \\?, price = \\?, category = \\?, image_url = \\? WHERE id = \\?"
 	mock.ExpectExec(expectedQuery).
-		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category, productDTO.ID).
+		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category, productDTO.ImageUrl, productID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	repo := NewProductRepository(db)
 
-	err = repo.UpdateProduct(productDTO)
+	err = repo.UpdateProduct(productID, productDTO)
 
 	assert.NoError(t, err)
 	assert.NoError(t, mock.ExpectationsWereMet())
@@ -302,25 +300,25 @@ func TestProductRepository_UpdateProduct_DatabaseError(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
-
 	productDTO := &dto.ProductDTO{
-		ID:          1,
 		Name:        "Updated Burger",
 		Description: "Updated delicious burger",
 		Price:       "18.99",
 		Category:    "main",
+		ImageUrl:    "http://example.com/burger.jpg",
 	}
 
-	expectedQuery := "UPDATE products SET name = \\?, description = \\?, price = \\?, category = \\? WHERE id = \\?"
+	productID := 1
+	expectedQuery := "UPDATE products SET name = \\?, description = \\?, price = \\?, category = \\?, image_url = \\? WHERE id = \\?"
 	expectedError := errors.New("database connection failed")
 
 	mock.ExpectExec(expectedQuery).
-		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category, productDTO.ID).
+		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category, productDTO.ImageUrl, productID).
 		WillReturnError(expectedError)
 
 	repo := NewProductRepository(db)
 
-	err = repo.UpdateProduct(productDTO)
+	err = repo.UpdateProduct(productID, productDTO)
 
 	assert.Error(t, err)
 	assert.Equal(t, expectedError, err)
@@ -331,23 +329,23 @@ func TestProductRepository_UpdateProduct_NoRowsAffected(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
-
 	productDTO := &dto.ProductDTO{
-		ID:          999,
 		Name:        "Updated Burger",
 		Description: "Updated delicious burger",
 		Price:       "18.99",
 		Category:    "main",
+		ImageUrl:    "http://example.com/burger.jpg",
 	}
 
-	expectedQuery := "UPDATE products SET name = \\?, description = \\?, price = \\?, category = \\? WHERE id = \\?"
+	productID := 999
+	expectedQuery := "UPDATE products SET name = \\?, description = \\?, price = \\?, category = \\?, image_url = \\? WHERE id = \\?"
 	mock.ExpectExec(expectedQuery).
-		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category, productDTO.ID).
+		WithArgs(productDTO.Name, productDTO.Description, productDTO.Price, productDTO.Category, productDTO.ImageUrl, productID).
 		WillReturnResult(sqlmock.NewResult(1, 0))
 
 	repo := NewProductRepository(db)
 
-	err = repo.UpdateProduct(productDTO)
+	err = repo.UpdateProduct(productID, productDTO)
 
 	assert.NoError(t, err)
 	assert.NoError(t, mock.ExpectationsWereMet())
@@ -429,10 +427,9 @@ func TestProductRepository_UpdateProduct_NilProduct(t *testing.T) {
 	db, _, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
-
 	repo := NewProductRepository(db)
 
 	assert.Panics(t, func() {
-		repo.UpdateProduct(nil)
+		repo.UpdateProduct(1, nil)
 	})
 }

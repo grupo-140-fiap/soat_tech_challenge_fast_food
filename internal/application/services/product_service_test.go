@@ -36,8 +36,8 @@ func (m *MockProductRepository) GetProductByCategory(category string) ([]entitie
 	return args.Get(0).([]entities.Product), args.Error(1)
 }
 
-func (m *MockProductRepository) UpdateProduct(product *dto.ProductDTO) error {
-	args := m.Called(product)
+func (m *MockProductRepository) UpdateProduct(producId int, product *dto.ProductDTO) error {
+	args := m.Called(producId, product)
 	return args.Error(0)
 }
 
@@ -62,7 +62,7 @@ func TestProductService_CreateProduct_Success(t *testing.T) {
 		Description: "Delicious cheeseburger",
 		Price:       "19.90",
 		Category:    "Lanche",
-		Image:       "https://example.com/cheeseburger.png",
+		ImageUrl:    "https://example.com/cheeseburger.png",
 	}
 
 	mockRepo.On("CreateProduct", productDTO).Return(nil)
@@ -83,7 +83,7 @@ func TestProductService_CreateProduct_RepositoryError(t *testing.T) {
 		Description: "Delicious cheeseburger",
 		Price:       "19.90",
 		Category:    "Lanche",
-		Image:       "https://example.com/cheeseburger.png",
+		ImageUrl:    "https://example.com/cheeseburger.png",
 	}
 
 	expectedError := errors.New("database connection failed")
@@ -108,7 +108,7 @@ func TestProductService_GetProductById_Success(t *testing.T) {
 		Description: "Delicious cheeseburger",
 		Price:       19.90,
 		Category:    "Lanche",
-		Image:       "https://example.com/cheeseburger.png",
+		ImageUrl:    "https://example.com/cheeseburger.png",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -176,7 +176,7 @@ func TestProductService_GetProductByCategory_Success(t *testing.T) {
 			Description: "Delicious cheeseburger",
 			Price:       19.90,
 			Category:    "Lanche",
-			Image:       "https://example.com/cheeseburger.png",
+			ImageUrl:    "https://example.com/cheeseburger.png",
 		},
 		{
 			ID:          2,
@@ -184,7 +184,7 @@ func TestProductService_GetProductByCategory_Success(t *testing.T) {
 			Description: "Big delicious burger",
 			Price:       25.90,
 			Category:    "Lanche",
-			Image:       "https://example.com/bigburger.png",
+			ImageUrl:    "https://example.com/bigburger.png",
 		},
 	}
 
@@ -241,20 +241,20 @@ func TestProductService_GetProductByCategory_RepositoryError(t *testing.T) {
 func TestProductService_UpdateProduct_Success(t *testing.T) {
 	mockRepo := &MockProductRepository{}
 
+	productID := 1
 	productDTO := &dto.ProductDTO{
-		ID:          1,
 		Name:        "Updated Cheeseburger",
 		Description: "Updated delicious cheeseburger",
 		Price:       "21.90",
 		Category:    "Lanche",
-		Image:       "https://example.com/updated-cheeseburger.png",
+		ImageUrl:    "https://example.com/updated-cheeseburger.png",
 	}
 
-	mockRepo.On("UpdateProduct", productDTO).Return(nil)
+	mockRepo.On("UpdateProduct", productID, productDTO).Return(nil)
 
 	service := NewProductService(mockRepo)
 
-	err := service.UpdateProduct(productDTO)
+	err := service.UpdateProduct(productID, productDTO)
 
 	assert.NoError(t, err)
 	mockRepo.AssertExpectations(t)
@@ -263,21 +263,21 @@ func TestProductService_UpdateProduct_Success(t *testing.T) {
 func TestProductService_UpdateProduct_RepositoryError(t *testing.T) {
 	mockRepo := &MockProductRepository{}
 
+	productID := 1
 	productDTO := &dto.ProductDTO{
-		ID:          1,
 		Name:        "Updated Cheeseburger",
 		Description: "Updated delicious cheeseburger",
 		Price:       "21.90",
 		Category:    "Lanche",
-		Image:       "https://example.com/updated-cheeseburger.png",
+		ImageUrl:    "https://example.com/updated-cheeseburger.png",
 	}
 
 	expectedError := errors.New("database connection failed")
-	mockRepo.On("UpdateProduct", productDTO).Return(expectedError)
+	mockRepo.On("UpdateProduct", productID, productDTO).Return(expectedError)
 
 	service := NewProductService(mockRepo)
 
-	err := service.UpdateProduct(productDTO)
+	err := service.UpdateProduct(productID, productDTO)
 
 	assert.Error(t, err)
 	assert.Equal(t, expectedError, err)
@@ -351,12 +351,13 @@ func TestProductService_CreateProduct_NilProduct(t *testing.T) {
 func TestProductService_UpdateProduct_NilProduct(t *testing.T) {
 	mockRepo := &MockProductRepository{}
 
+	productID := 1
 	expectedError := errors.New("invalid product data")
-	mockRepo.On("UpdateProduct", (*dto.ProductDTO)(nil)).Return(expectedError)
+	mockRepo.On("UpdateProduct", productID, (*dto.ProductDTO)(nil)).Return(expectedError)
 
 	service := NewProductService(mockRepo)
 
-	err := service.UpdateProduct(nil)
+	err := service.UpdateProduct(productID, nil)
 
 	assert.Error(t, err)
 	assert.Equal(t, expectedError, err)

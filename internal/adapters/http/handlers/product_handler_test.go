@@ -41,8 +41,8 @@ func (m *MockProductService) CreateProduct(product *dto.ProductDTO) error {
 	return args.Error(0)
 }
 
-func (m *MockProductService) UpdateProduct(product *dto.ProductDTO) error {
-	args := m.Called(product)
+func (m *MockProductService) UpdateProduct(productId int, product *dto.ProductDTO) error {
+	args := m.Called(productId, product)
 	return args.Error(0)
 }
 
@@ -69,6 +69,7 @@ func TestProductHandler_GetProductById_Success(t *testing.T) {
 		Description: "Delicious burger",
 		Price:       15.99,
 		Category:    "main",
+		ImageUrl:    "http://example.com/burger.jpg",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -141,6 +142,7 @@ func TestProductHandler_GetProductByCategory_Success(t *testing.T) {
 			Description: "Delicious burger",
 			Price:       15.99,
 			Category:    "main",
+			ImageUrl:    "http://example.com/burger.jpg",
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
 		},
@@ -150,6 +152,7 @@ func TestProductHandler_GetProductByCategory_Success(t *testing.T) {
 			Description: "Tasty pizza",
 			Price:       25.50,
 			Category:    "main",
+			ImageUrl:    "http://example.com/pizza.jpg",
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
 		},
@@ -310,26 +313,28 @@ func TestProductHandler_CreateProduct_ServiceError(t *testing.T) {
 
 func TestProductHandler_UpdateProduct_Success(t *testing.T) {
 	gin.SetMode(gin.TestMode)
-
 	productDTO := dto.ProductDTO{
-		ID:          1,
 		Name:        "Updated Burger",
 		Description: "An updated delicious burger",
 		Price:       "19.99",
 		Category:    "main",
+		ImageUrl:    "http://example.com/burger.jpg",
 	}
 
+	productID := 1
 	mockService := &MockProductService{}
-	mockService.On("UpdateProduct", &productDTO).Return(nil)
+	mockService.On("UpdateProduct", productID, &productDTO).Return(nil)
 
 	handler := NewProductHandler(mockService)
-
 	requestBody, _ := json.Marshal(productDTO)
 
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
-	c.Request = httptest.NewRequest(http.MethodPut, "/products", bytes.NewBuffer(requestBody))
+	c.Request = httptest.NewRequest(http.MethodPut, "/products/1", bytes.NewBuffer(requestBody))
 	c.Request.Header.Set("Content-Type", "application/json")
+	c.Params = gin.Params{
+		{Key: "id", Value: "1"},
+	}
 
 	handler.UpdateProduct(c)
 
@@ -350,11 +355,13 @@ func TestProductHandler_UpdateProduct_InvalidJSON(t *testing.T) {
 	handler := NewProductHandler(mockService)
 
 	invalidJSON := `{"id": 1, "name": "Burger", "price":}`
-
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
-	c.Request = httptest.NewRequest(http.MethodPut, "/products", bytes.NewBuffer([]byte(invalidJSON)))
+	c.Request = httptest.NewRequest(http.MethodPut, "/products/1", bytes.NewBuffer([]byte(invalidJSON)))
 	c.Request.Header.Set("Content-Type", "application/json")
+	c.Params = gin.Params{
+		{Key: "id", Value: "1"},
+	}
 
 	handler.UpdateProduct(c)
 
@@ -370,28 +377,30 @@ func TestProductHandler_UpdateProduct_InvalidJSON(t *testing.T) {
 
 func TestProductHandler_UpdateProduct_ServiceError(t *testing.T) {
 	gin.SetMode(gin.TestMode)
-
 	productDTO := dto.ProductDTO{
-		ID:          1,
 		Name:        "Updated Burger",
 		Description: "An updated delicious burger",
 		Price:       "19.99",
 		Category:    "main",
+		ImageUrl:    "http://example.com/burger.jpg",
 	}
 
+	productID := 1
 	expectedError := errors.New("failed to update product")
 
 	mockService := &MockProductService{}
-	mockService.On("UpdateProduct", &productDTO).Return(expectedError)
+	mockService.On("UpdateProduct", productID, &productDTO).Return(expectedError)
 
 	handler := NewProductHandler(mockService)
-
 	requestBody, _ := json.Marshal(productDTO)
 
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
-	c.Request = httptest.NewRequest(http.MethodPut, "/products", bytes.NewBuffer(requestBody))
+	c.Request = httptest.NewRequest(http.MethodPut, "/products/1", bytes.NewBuffer(requestBody))
 	c.Request.Header.Set("Content-Type", "application/json")
+	c.Params = gin.Params{
+		{Key: "id", Value: "1"},
+	}
 
 	handler.UpdateProduct(c)
 
