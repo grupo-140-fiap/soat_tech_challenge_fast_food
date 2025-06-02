@@ -1,8 +1,8 @@
-
 package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
@@ -111,26 +111,35 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 // @Produce      json
 // @Param        product  body      dto.ProductDTO  true  "Product data"
 // @Success      200      {object}  map[string]interface{}  "Product updated successfully"
-// @Router       /products [put]
+// @Router       /products/{id} [put]
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
+	productIdStr := c.Param("id")
+
+	productId, err := strconv.Atoi(productIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid Product ID format",
+			"error":   "Product ID must be a valid integer",
+		})
+		return
+	}
+
 	var productDTO dto.ProductDTO
 
 	if err := c.ShouldBindJSON(&productDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Invalid input",
 		})
-
 		return
 	}
 
-	err := h.productService.UpdateProduct(&productDTO)
+	err = h.productService.UpdateProduct(productId, &productDTO)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Failed to update product",
 			"error":   err.Error(),
 		})
-
 		return
 	}
 

@@ -13,7 +13,7 @@ CREATE TABLE customers (
 CREATE TABLE orders (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     customer_id BIGINT UNSIGNED NULL REFERENCES customers(id),
-    cpf         VARCHAR(14),
+    cpf         VARCHAR(14) NULL,
     status      ENUM('received', 'preparation', 'ready', 'completed'),
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -25,6 +25,7 @@ CREATE TABLE products (
     description TEXT,
     price       FLOAT NOT NULL,
     category    ENUM('burger', 'side', 'drink', 'dessert'),
+    image_url   VARCHAR(255) NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

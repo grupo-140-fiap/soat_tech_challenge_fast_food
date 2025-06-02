@@ -10,7 +10,7 @@ type ProductService interface {
 	GetProductByCategory(category string) ([]entities.Product, error)
 
 	CreateProduct(product *dto.ProductDTO) error
-	UpdateProduct(product *dto.ProductDTO) error
+	UpdateProduct(producId int, product *dto.ProductDTO) error
 
 	DeleteProductById(id string) error
 }

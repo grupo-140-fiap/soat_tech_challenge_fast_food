@@ -18,9 +18,9 @@ func NewProductRepository(db *sql.DB) repositories.ProductRepository {
 }
 
 func (u *ProductRepository) CreateProduct(product *dto.ProductDTO) error {
-	query := "INSERT INTO products (name, description, price, category) VALUES (?, ?, ?, ?)"
+	query := "INSERT INTO products (name, description, price, category, image_url) VALUES (?, ?, ?, ?, ?)"
 
-	_, err := u.db.Exec(query, product.Name, product.Description, product.Price, product.Category)
+	_, err := u.db.Exec(query, product.Name, product.Description, product.Price, product.Category, product.ImageUrl)
 
 	if err != nil {
 		return err
@@ -30,11 +30,11 @@ func (u *ProductRepository) CreateProduct(product *dto.ProductDTO) error {
 }
 
 func (u *ProductRepository) GetProductById(id string) (*entities.Product, error) {
-	query := "SELECT id, name, description, price, category FROM products WHERE id = ?"
+	query := "SELECT id, name, description, price, category, image_url FROM products WHERE id = ?"
 	row := u.db.QueryRow(query, id)
 
 	var product entities.Product
-	err := row.Scan(&product.ID, &product.Name, &product.Description, &product.Price, &product.Category)
+	err := row.Scan(&product.ID, &product.Name, &product.Description, &product.Price, &product.Category, &product.ImageUrl)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -48,7 +48,7 @@ func (u *ProductRepository) GetProductById(id string) (*entities.Product, error)
 }
 
 func (u *ProductRepository) GetProductByCategory(category string) ([]entities.Product, error) {
-	rows, err := u.db.Query("SELECT id, name, description, price, category FROM products WHERE category = ?", category)
+	rows, err := u.db.Query("SELECT id, name, description, price, category, image_url FROM products WHERE category = ?", category)
 	if err != nil {
 		return nil, fmt.Errorf("products with CATEGORY %s not found", category)
 	}
@@ -57,7 +57,7 @@ func (u *ProductRepository) GetProductByCategory(category string) ([]entities.Pr
 	var products []entities.Product = make([]entities.Product, 0)
 	for rows.Next() {
 		var p entities.Product
-		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Category); err != nil {
+		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Category, &p.ImageUrl); err != nil {
 			return nil, err
 		}
 		products = append(products, p)
@@ -66,10 +66,18 @@ func (u *ProductRepository) GetProductByCategory(category string) ([]entities.Pr
 	return products, nil
 }
 
-func (u *ProductRepository) UpdateProduct(product *dto.ProductDTO) error {
-	query := "UPDATE products SET name = ?, description = ?, price = ?, category = ? WHERE id = ?"
+func (u *ProductRepository) UpdateProduct(producId int, product *dto.ProductDTO) error {
+	query := "UPDATE products SET name = ?, description = ?, price = ?, category = ?, image_url = ? WHERE id = ?"
 
-	_, err := u.db.Exec(query, product.Name, product.Description, product.Price, product.Category, product.ID)
+	_, err := u.db.Exec(
+		query,
+		product.Name,
+		product.Description,
+		product.Price,
+		product.Category,
+		product.ImageUrl,
+		producId,
+	)
 
 	if err != nil {
 		return err

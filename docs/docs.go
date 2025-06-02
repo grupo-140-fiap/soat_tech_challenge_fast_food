@@ -106,6 +106,27 @@ const docTemplate = `{
             }
         },
         "/orders": {
+            "get": {
+                "description": "Retrieves a list of all orders",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get all orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.Order"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Creates a new order using the provided JSON payload",
                 "consumes": [
@@ -289,39 +310,6 @@ const docTemplate = `{
             }
         },
         "/products": {
-            "put": {
-                "description": "Updates the details of an existing product based on the provided JSON payload.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "products"
-                ],
-                "summary": "Update an existing product",
-                "parameters": [
-                    {
-                        "description": "Product data",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.ProductDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Product updated successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "Creates a new product using the provided JSON payload",
                 "consumes": [
@@ -410,6 +398,39 @@ const docTemplate = `{
                     }
                 }
             },
+            "put": {
+                "description": "Updates the details of an existing product based on the provided JSON payload.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Update an existing product",
+                "parameters": [
+                    {
+                        "description": "Product data",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ProductDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "Deletes a product from the database using its unique identifier.",
                 "tags": [
@@ -463,13 +484,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "cpf": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123.456.789-00"
                 },
                 "customer_id": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 123
                 },
                 "items": {
                     "type": "array",
@@ -478,27 +498,29 @@ const docTemplate = `{
                     }
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "pending"
                 }
             }
         },
         "dto.OrderItemDTO": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "order_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
                 "price": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 19.99
                 },
                 "product_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 200
                 },
                 "quantity": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 2
                 }
             }
         },
@@ -524,17 +546,13 @@ const docTemplate = `{
             "properties": {
                 "category": {
                     "type": "string",
-                    "example": "Lanche"
+                    "example": "burger"
                 },
                 "description": {
                     "type": "string",
                     "example": "Delicioso cheeseburger com queijo cheddar e molho especial"
                 },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "image": {
+                "image_url": {
                     "type": "string",
                     "example": "https://example.com/images/cheeseburger.png"
                 },
@@ -654,7 +672,7 @@ const docTemplate = `{
             "properties": {
                 "category": {
                     "type": "string",
-                    "example": "Sandwich"
+                    "example": "burger"
                 },
                 "created_at": {
                     "type": "string",
@@ -668,7 +686,7 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 1
                 },
-                "image": {
+                "image_url": {
                     "type": "string",
                     "example": "https://example.com/images/cheeseburger.png"
                 },

@@ -46,8 +46,8 @@ func (u *ProductService) GetProductByCategory(category string) ([]entities.Produ
 	return products, nil
 }
 
-func (u *ProductService) UpdateProduct(product *dto.ProductDTO) error {
-	err := u.productRepository.UpdateProduct(product)
+func (u *ProductService) UpdateProduct(producId int, product *dto.ProductDTO) error {
+	err := u.productRepository.UpdateProduct(producId, product)
 
 	if err != nil {
 		return err

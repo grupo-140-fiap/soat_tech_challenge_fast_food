@@ -22,6 +22,13 @@ func NewOrderHandler(orderService services.OrderService) *OrderHandler {
 	}
 }
 
+// GetOrders godoc
+// @Summary      Get all orders
+// @Description  Retrieves a list of all orders
+// @Tags         orders
+// @Produce      json
+// @Success      200  {array}   entities.Order
+// @Router       /orders [get]
 func (h *OrderHandler) GetOrders(c *gin.Context) {
 	orders, err := h.orderService.GetOrders()
 

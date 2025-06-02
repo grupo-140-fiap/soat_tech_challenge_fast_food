@@ -68,15 +68,14 @@ func setProductRouter(db *sql.DB, router *gin.Engine) {
 	v1.GET("/products/category/:category", productHandler.GetProductByCategory)
 
 	v1.POST("/products", productHandler.CreateProduct)
-	v1.PUT("/products", productHandler.UpdateProduct)
+	v1.PUT("/products/:id", productHandler.UpdateProduct)
 	v1.DELETE("/products/:id", productHandler.DeleteProductById)
 
 }
 
 func setOrdersRouter(db *sql.DB, router *gin.Engine) {
 	orderRepository := persistance.NewOrderRepository(db)
-	orderItemRepository := persistance.NewOrderItemRepository(db)
-	orderService := services.NewOrderService(orderRepository, orderItemRepository)
+	orderService := services.NewOrderService(orderRepository)
 	orderHandler := handlers.NewOrderHandler(orderService)
 
 	v1 := router.Group("/api/v1")

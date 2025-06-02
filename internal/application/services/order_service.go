@@ -7,60 +7,35 @@ import (
 )
 
 type OrderService struct {
-	orderRepository     repositories.OrderRepository
-	orderItemRepository repositories.OrderItemRepository
+	orderRepository repositories.OrderRepository
 }
 
-func NewOrderService(orderRepository repositories.OrderRepository, orderItemRepository repositories.OrderItemRepository) *OrderService {
+func NewOrderService(orderRepository repositories.OrderRepository) *OrderService {
 	return &OrderService{
-		orderRepository:     orderRepository,
-		orderItemRepository: orderItemRepository,
+		orderRepository: orderRepository,
 	}
 }
 
 func (u *OrderService) GetOrders() ([]entities.Order, error) {
 	orders, err := u.orderRepository.GetOrders()
-
 	if err != nil {
 		return nil, err
 	}
-
 	return orders, nil
 }
 
 func (u *OrderService) CreateOrder(order *dto.OrderDTO) error {
-	err := u.orderRepository.CreateOrder(order)
-
-	if err != nil {
-		return err
-	} else {
-		for _, item := range order.Items {
-			err = u.orderItemRepository.CreateOrderItem(&item)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
+	return u.orderRepository.CreateOrder(order)
 }
 
 func (u *OrderService) GetOrderById(id string) (*entities.Order, error) {
 	order, err := u.orderRepository.GetOrderById(id)
-
 	if err != nil {
 		return nil, err
 	}
-
 	return order, nil
 }
 
 func (u *OrderService) UpdateOrderStatus(id string, status string) error {
-	err := u.orderRepository.UpdateOrderStatus(id, status)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return u.orderRepository.UpdateOrderStatus(id, status)
 }

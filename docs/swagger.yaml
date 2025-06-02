@@ -18,29 +18,32 @@ definitions:
   dto.OrderDTO:
     properties:
       cpf:
+        example: 123.456.789-00
         type: string
       customer_id:
-        type: integer
-      id:
+        example: 123
         type: integer
       items:
         items:
           $ref: '#/definitions/dto.OrderItemDTO'
         type: array
       status:
+        example: pending
         type: string
     type: object
   dto.OrderItemDTO:
     properties:
-      id:
-        type: integer
       order_id:
+        example: 100
         type: integer
       price:
+        example: 19.99
         type: number
       product_id:
+        example: 200
         type: integer
       quantity:
+        example: 2
         type: integer
     type: object
   dto.PaymentDTO:
@@ -57,15 +60,12 @@ definitions:
   dto.ProductDTO:
     properties:
       category:
-        example: Lanche
+        example: burger
         type: string
       description:
         example: Delicioso cheeseburger com queijo cheddar e molho especial
         type: string
-      id:
-        example: 1
-        type: integer
-      image:
+      image_url:
         example: https://example.com/images/cheeseburger.png
         type: string
       name:
@@ -151,7 +151,7 @@ definitions:
   entities.Product:
     properties:
       category:
-        example: Sandwich
+        example: burger
         type: string
       created_at:
         example: "2024-06-01T12:00:00Z"
@@ -162,7 +162,7 @@ definitions:
       id:
         example: 1
         type: integer
-      image:
+      image_url:
         example: https://example.com/images/cheeseburger.png
         type: string
       name:
@@ -248,6 +248,20 @@ paths:
       tags:
       - customers
   /orders:
+    get:
+      description: Retrieves a list of all orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Order'
+            type: array
+      summary: Get all orders
+      tags:
+      - orders
     post:
       consumes:
       - application/json
@@ -392,29 +406,6 @@ paths:
       summary: Create a new product
       tags:
       - products
-    put:
-      consumes:
-      - application/json
-      description: Updates the details of an existing product based on the provided
-        JSON payload.
-      parameters:
-      - description: Product data
-        in: body
-        name: product
-        required: true
-        schema:
-          $ref: '#/definitions/dto.ProductDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Product updated successfully
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Update an existing product
-      tags:
-      - products
   /products/{id}:
     delete:
       description: Deletes a product from the database using its unique identifier.
@@ -447,6 +438,29 @@ paths:
           schema:
             $ref: '#/definitions/dto.ProductDTO'
       summary: Get product by ID
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Updates the details of an existing product based on the provided
+        JSON payload.
+      parameters:
+      - description: Product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update an existing product
       tags:
       - products
   /products/category/{category}:
