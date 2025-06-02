@@ -31,7 +31,7 @@ definitions:
   dto.OrderItemDTO:
     properties:
       product_id:
-        example: 200
+        example: 1
         type: integer
       quantity:
         example: 2
@@ -109,7 +109,7 @@ definitions:
           $ref: '#/definitions/entities.OrderItem'
         type: array
       status:
-        example: pending
+        example: received
         type: string
       updated_at:
         example: "2024-06-01T12:30:00Z"

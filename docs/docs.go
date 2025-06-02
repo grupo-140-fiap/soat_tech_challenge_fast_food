@@ -511,7 +511,7 @@ const docTemplate = `{
             "properties": {
                 "product_id": {
                     "type": "integer",
-                    "example": 200
+                    "example": 1
                 },
                 "quantity": {
                     "type": "integer",
@@ -621,7 +621,7 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string",
-                    "example": "pending"
+                    "example": "received"
                 },
                 "updated_at": {
                     "type": "string",

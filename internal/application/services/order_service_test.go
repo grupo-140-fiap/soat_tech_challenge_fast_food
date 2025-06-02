@@ -7,7 +7,6 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
 )
 
-// Mock implementations for testing
 type mockOrderRepository struct{}
 
 func (m *mockOrderRepository) GetOrders() ([]entities.Order, error) {
@@ -24,6 +23,11 @@ func (m *mockOrderRepository) GetOrderById(id string) (*entities.Order, error) {
 
 func (m *mockOrderRepository) UpdateOrderStatus(id string, status string) error {
 	return nil
+}
+
+func (m *mockOrderRepository) GetActiveOrders() (*[]entities.Order, error) {
+	orders := []entities.Order{}
+	return &orders, nil
 }
 
 type mockProductService struct{}
@@ -44,7 +48,7 @@ func (m *mockProductService) GetProductById(id string) (*entities.Product, error
 	}, nil
 }
 
-func (m *mockProductService) UpdateProduct(id string, product *dto.ProductDTO) error {
+func (m *mockProductService) UpdateProduct(id int, product *dto.ProductDTO) error {
 	return nil
 }
 
@@ -52,25 +56,61 @@ func (m *mockProductService) DeleteProductById(id string) error {
 	return nil
 }
 
-func TestOrderService_CreateOrder(t *testing.T) {
+func (m *mockProductService) GetProductByCategory(category string) ([]entities.Product, error) {
+	return []entities.Product{}, nil
+}
+
+func TestOrderService_UpdateOrderStatus_ValidStatus(t *testing.T) {
 	mockOrderRepo := &mockOrderRepository{}
 	mockProductSvc := &mockProductService{}
 
 	orderService := NewOrderService(mockOrderRepo, mockProductSvc)
 
-	orderDTO := &dto.OrderDTO{
-		CustomerId: 1,
-		CPF:        "123.456.789-10",
-		Items: []dto.OrderItemDTO{
-			{
-				ProductId: 1,
-				Quantity:  2,
-			},
-		},
+	validStatuses := []string{"received", "preparation", "ready", "completed"}
+
+	for _, status := range validStatuses {
+		err := orderService.UpdateOrderStatus("1", status)
+		if err != nil {
+			t.Errorf("Expected no error for valid status '%s', got %v", status, err)
+		}
+	}
+}
+
+func TestOrderService_UpdateOrderStatus_InvalidStatus(t *testing.T) {
+	mockOrderRepo := &mockOrderRepository{}
+	mockProductSvc := &mockProductService{}
+
+	orderService := NewOrderService(mockOrderRepo, mockProductSvc)
+
+	invalidStatuses := []string{"invalid", "pending", "cancelled", ""}
+
+	for _, status := range invalidStatuses {
+		err := orderService.UpdateOrderStatus("1", status)
+		if err == nil {
+			t.Errorf("Expected error for invalid status '%s', got nil", status)
+		}
+	}
+}
+
+func TestIsValidOrderStatus(t *testing.T) {
+	tests := []struct {
+		status   string
+		expected bool
+	}{
+		{"received", true},
+		{"preparation", true},
+		{"ready", true},
+		{"completed", true},
+		{"invalid", false},
+		{"pending", false},
+		{"cancelled", false},
+		{"", false},
 	}
 
-	err := orderService.CreateOrder(orderDTO)
-	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
+	for _, test := range tests {
+		result := isValidOrderStatus(test.status)
+		if result != test.expected {
+			t.Errorf("isValidOrderStatus(%s) = %v; expected %v", test.status, result, test.expected)
+		}
 	}
 }

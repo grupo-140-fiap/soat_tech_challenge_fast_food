@@ -9,6 +9,13 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
 )
 
+var validOrderStatuses = map[string]bool{
+	"received":    true,
+	"preparation": true,
+	"ready":       true,
+	"completed":   true,
+}
+
 type OrderService struct {
 	orderRepository repositories.OrderRepository
 	productService  services.ProductService
@@ -49,5 +56,13 @@ func (u *OrderService) GetOrderById(id string) (*entities.Order, error) {
 }
 
 func (u *OrderService) UpdateOrderStatus(id string, status string) error {
+	if !isValidOrderStatus(status) {
+		return fmt.Errorf("invalid order status: %s. Valid statuses are: received, preparation, ready, completed", status)
+	}
+
 	return u.orderRepository.UpdateOrderStatus(id, status)
+}
+
+func isValidOrderStatus(status string) bool {
+	return validOrderStatuses[status]
 }
