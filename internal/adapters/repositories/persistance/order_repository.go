@@ -30,6 +30,14 @@ func (u *OrderRepository) GetOrders() ([]entities.Order, error) {
 		if err := rows.Scan(&o.ID, &o.CustomerId, &o.CPF, &o.Status, &o.CreatedAt, &o.UpdatedAt); err != nil {
 			return nil, err
 		}
+
+		// Load order items for this order
+		items, err := u.getOrderItems(o.ID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load items for order %d: %w", o.ID, err)
+		}
+		o.Items = items
+
 		orders = append(orders, o)
 	}
 
@@ -89,11 +97,11 @@ func (u *OrderRepository) CreateOrder(order *dto.OrderDTO) error {
 }
 
 func (u *OrderRepository) GetOrderById(id string) (*entities.Order, error) {
-	query := "SELECT id, customer_id, cpf, status FROM orders WHERE id = ?"
+	query := "SELECT id, customer_id, cpf, status, created_at, updated_at FROM orders WHERE id = ?"
 	row := u.db.QueryRow(query, id)
 
 	var orders entities.Order
-	err := row.Scan(&orders.ID, &orders.CustomerId, &orders.CPF, &orders.Status)
+	err := row.Scan(&orders.ID, &orders.CustomerId, &orders.CPF, &orders.Status, &orders.CreatedAt, &orders.UpdatedAt)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -102,6 +110,12 @@ func (u *OrderRepository) GetOrderById(id string) (*entities.Order, error) {
 
 		return nil, err
 	}
+
+	items, err := u.getOrderItems(orders.ID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load items for order %d: %w", orders.ID, err)
+	}
+	orders.Items = items
 
 	return &orders, nil
 }
@@ -198,4 +212,29 @@ func (u *OrderRepository) GetActiveOrders() (*[]entities.Order, error) {
 	}
 
 	return &orders, nil
+}
+
+func (u *OrderRepository) getOrderItems(orderID uint64) ([]entities.OrderItem, error) {
+	query := "SELECT id, order_id, product_id, quantity, price, created_at, updated_at FROM order_items WHERE order_id = ?"
+	rows, err := u.db.Query(query, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query order items: %w", err)
+	}
+	defer rows.Close()
+
+	var items []entities.OrderItem
+	for rows.Next() {
+		var item entities.OrderItem
+		err := rows.Scan(&item.ID, &item.OrderID, &item.ProductID, &item.Quantity, &item.Price, &item.CreatedAt, &item.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan order item: %w", err)
+		}
+		items = append(items, item)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating order item rows: %w", err)
+	}
+
+	return items, nil
 }
