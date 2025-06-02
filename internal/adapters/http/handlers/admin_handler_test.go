@@ -157,8 +157,9 @@ func TestAdminHandler_GetActiveOrders_ServiceError(t *testing.T) {
 func TestAdminHandler_GetActiveOrders_ServiceReturnsNil(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
+	mockOrders := &[]entities.Order{}
 	mockService := &MockAdminService{}
-	mockService.On("GetActiveOrders").Return(nil, nil)
+	mockService.On("GetActiveOrders").Return(mockOrders, nil)
 
 	handler := NewAdminHandler(mockService)
 
@@ -170,8 +171,10 @@ func TestAdminHandler_GetActiveOrders_ServiceReturnsNil(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 
-	body := w.Body.String()
-	assert.Equal(t, "null", body)
+	var responseOrders []entities.Order
+	err := json.Unmarshal(w.Body.Bytes(), &responseOrders)
+	assert.NoError(t, err)
+	assert.Empty(t, responseOrders)
 
 	mockService.AssertExpectations(t)
 }

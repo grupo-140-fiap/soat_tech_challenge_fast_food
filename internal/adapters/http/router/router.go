@@ -75,7 +75,9 @@ func setProductRouter(db *sql.DB, router *gin.Engine) {
 
 func setOrdersRouter(db *sql.DB, router *gin.Engine) {
 	orderRepository := persistance.NewOrderRepository(db)
-	orderService := services.NewOrderService(orderRepository)
+	productRepository := persistance.NewProductRepository(db)
+	productService := services.NewProductService(productRepository)
+	orderService := services.NewOrderService(orderRepository, productService)
 	orderHandler := handlers.NewOrderHandler(orderService)
 
 	v1 := router.Group("/api/v1")

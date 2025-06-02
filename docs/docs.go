@@ -503,20 +503,12 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/dto.OrderItemDTO"
                     }
-                },
-                "status": {
-                    "type": "string",
-                    "example": "pending"
                 }
             }
         },
         "dto.OrderItemDTO": {
             "type": "object",
             "properties": {
-                "price": {
-                    "type": "number",
-                    "example": 19.99
-                },
                 "product_id": {
                     "type": "integer",
                     "example": 200

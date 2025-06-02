@@ -21,5 +21,10 @@ func (s *AdminService) GetActiveOrders() (*[]entities.Order, error) {
 		return nil, err
 	}
 
+	if orders == nil {
+		emptyOrders := make([]entities.Order, 0)
+		return &emptyOrders, nil
+	}
+
 	return orders, nil
 }

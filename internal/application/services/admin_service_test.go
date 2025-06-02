@@ -160,7 +160,8 @@ func TestAdminService_GetActiveOrders_NilResult(t *testing.T) {
 	result, err := service.GetActiveOrders()
 
 	assert.NoError(t, err)
-	assert.Nil(t, result)
+	assert.NotNil(t, result)
+	assert.Len(t, *result, 0)
 
 	mockRepo.AssertExpectations(t)
 }

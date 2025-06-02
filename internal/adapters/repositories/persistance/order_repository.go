@@ -52,10 +52,9 @@ func (u *OrderRepository) CreateOrder(order *dto.OrderDTO) error {
 			err = tx.Commit()
 		}
 	}()
-
 	result, err := tx.Exec(
 		"INSERT INTO orders (customer_id, cpf, status) VALUES (?, ?, ?)",
-		order.CustomerId, order.CPF, order.Status,
+		order.CustomerId, order.CPF, "received",
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create order: %w", err)
@@ -65,7 +64,6 @@ func (u *OrderRepository) CreateOrder(order *dto.OrderDTO) error {
 	if err != nil {
 		return fmt.Errorf("failed to get order ID: %w", err)
 	}
-
 	if len(order.Items) > 0 {
 		stmt, err := tx.Prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)")
 		if err != nil {
@@ -74,7 +72,13 @@ func (u *OrderRepository) CreateOrder(order *dto.OrderDTO) error {
 		defer stmt.Close()
 
 		for _, item := range order.Items {
-			_, err = stmt.Exec(orderID, item.ProductId, item.Quantity, item.Price)
+			var productPrice float32
+			err = tx.QueryRow("SELECT price FROM products WHERE id = ?", item.ProductId).Scan(&productPrice)
+			if err != nil {
+				return fmt.Errorf("failed to get price for product ID %d: %w", item.ProductId, err)
+			}
+
+			_, err = stmt.Exec(orderID, item.ProductId, item.Quantity, productPrice)
 			if err != nil {
 				return fmt.Errorf("failed to create order item (product_id: %d): %w", item.ProductId, err)
 			}
