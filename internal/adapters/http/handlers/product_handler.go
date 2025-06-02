@@ -109,6 +109,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 // @Tags         products
 // @Accept       json
 // @Produce      json
+// @Param        id       path      string  true  "Product ID"
 // @Param        product  body      dto.ProductDTO  true  "Product data"
 // @Success      200      {object}  map[string]interface{}  "Product updated successfully"
 // @Router       /products/{id} [put]

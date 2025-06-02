@@ -233,7 +233,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Order status",
+                        "description": "New status",
                         "name": "status",
                         "in": "body",
                         "required": true,
@@ -412,6 +412,13 @@ const docTemplate = `{
                 "summary": "Update an existing product",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Product data",
                         "name": "product",
                         "in": "body",
@@ -542,7 +549,7 @@ const docTemplate = `{
             "properties": {
                 "category": {
                     "type": "string",
-                    "example": "burger"
+                    "example": "snack"
                 },
                 "description": {
                     "type": "string",
@@ -668,7 +675,7 @@ const docTemplate = `{
             "properties": {
                 "category": {
                     "type": "string",
-                    "example": "burger"
+                    "example": "snack"
                 },
                 "created_at": {
                     "type": "string",

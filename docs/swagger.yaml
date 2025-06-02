@@ -57,7 +57,7 @@ definitions:
   dto.ProductDTO:
     properties:
       category:
-        example: burger
+        example: snack
         type: string
       description:
         example: Delicioso cheeseburger com queijo cheddar e molho especial
@@ -148,7 +148,7 @@ definitions:
   entities.Product:
     properties:
       category:
-        example: burger
+        example: snack
         type: string
       created_at:
         example: "2024-06-01T12:00:00Z"
@@ -326,7 +326,7 @@ paths:
         name: id
         required: true
         type: string
-      - description: Order status
+      - description: New status
         in: body
         name: status
         required: true
@@ -443,6 +443,11 @@ paths:
       description: Updates the details of an existing product based on the provided
         JSON payload.
       parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Product data
         in: body
         name: product

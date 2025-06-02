@@ -24,7 +24,7 @@ CREATE TABLE products (
     name        VARCHAR(100) NOT NULL,
     description TEXT,
     price       FLOAT NOT NULL,
-    category    ENUM('burger', 'side', 'drink', 'dessert'),
+    category    ENUM('snack', 'side', 'drink', 'dessert'),
     image_url   VARCHAR(255) NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP

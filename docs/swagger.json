@@ -227,7 +227,7 @@
                         "required": true
                     },
                     {
-                        "description": "Order status",
+                        "description": "New status",
                         "name": "status",
                         "in": "body",
                         "required": true,
@@ -406,6 +406,13 @@
                 "summary": "Update an existing product",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Product data",
                         "name": "product",
                         "in": "body",
@@ -536,7 +543,7 @@
             "properties": {
                 "category": {
                     "type": "string",
-                    "example": "burger"
+                    "example": "snack"
                 },
                 "description": {
                     "type": "string",
@@ -662,7 +669,7 @@
             "properties": {
                 "category": {
                     "type": "string",
-                    "example": "burger"
+                    "example": "snack"
                 },
                 "created_at": {
                     "type": "string",
