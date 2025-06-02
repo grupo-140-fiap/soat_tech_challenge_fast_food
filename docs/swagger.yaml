@@ -33,9 +33,6 @@ definitions:
     type: object
   dto.OrderItemDTO:
     properties:
-      order_id:
-        example: 100
-        type: integer
       price:
         example: 19.99
         type: number
@@ -319,7 +316,7 @@ paths:
       tags:
       - orders
   /orders/{id}/status:
-    put:
+    patch:
       consumes:
       - application/json
       description: Updates the status of an existing order
@@ -329,7 +326,7 @@ paths:
         name: id
         required: true
         type: string
-      - description: New status
+      - description: Order status
         in: body
         name: status
         required: true

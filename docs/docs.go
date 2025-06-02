@@ -212,7 +212,7 @@ const docTemplate = `{
             }
         },
         "/orders/{id}/status": {
-            "put": {
+            "patch": {
                 "description": "Updates the status of an existing order",
                 "consumes": [
                     "application/json"
@@ -233,7 +233,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "New status",
+                        "description": "Order status",
                         "name": "status",
                         "in": "body",
                         "required": true,
@@ -506,10 +506,6 @@ const docTemplate = `{
         "dto.OrderItemDTO": {
             "type": "object",
             "properties": {
-                "order_id": {
-                    "type": "integer",
-                    "example": 100
-                },
                 "price": {
                     "type": "number",
                     "example": 19.99

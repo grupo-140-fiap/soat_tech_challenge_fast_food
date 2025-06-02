@@ -127,7 +127,7 @@ func (h *OrderHandler) GetOrderById(c *gin.Context) {
 // @Success      200     {object}  map[string]interface{}  "Order status updated successfully"
 // @Failure      400     {object}  map[string]interface{}  "Invalid input"
 // @Failure      500     {object}  map[string]interface{}  "Failed on update order status"
-// @Router       /orders/{id}/status [put]
+// @Router       /orders/{id}/status [patch]
 func (h *OrderHandler) UpdateOrderStatus(c *gin.Context) {
 	var body RequestBody
 	var id = c.Param("id")
