@@ -31,7 +31,6 @@ func (u *OrderRepository) GetOrders() ([]entities.Order, error) {
 			return nil, err
 		}
 
-		// Load order items for this order
 		items, err := u.getOrderItems(o.ID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to load items for order %d: %w", o.ID, err)
