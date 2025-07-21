@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/mercadopago/sdk-go/pkg/order"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities/dto"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
 )
 

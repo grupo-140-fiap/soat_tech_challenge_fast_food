@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities/dto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities/dto"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/input/services"
 )
 

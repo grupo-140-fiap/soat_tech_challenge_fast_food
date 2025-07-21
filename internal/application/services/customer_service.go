@@ -1,9 +1,9 @@
 package services
 
 import (
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities/dto"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
 )
 
 type CustomerService struct {
@@ -22,7 +22,7 @@ func (u *CustomerService) CreateCustomer(customer *dto.CreateCustomerDTO) error 
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 

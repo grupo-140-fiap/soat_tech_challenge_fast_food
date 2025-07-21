@@ -2,7 +2,6 @@ package router
 
 import (
 	"database/sql"
-	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mercadopago/sdk-go/pkg/order"
@@ -12,8 +11,6 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/adapters/http/handlers"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/adapters/repositories/persistance"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/services"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/infrastructure/database/mysql"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/infrastructure/mercadopago"
 
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -21,16 +18,6 @@ import (
 
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
-
-	db, err := mysql.NewConnection()
-	if err != nil {
-		log.Fatalf("Erro ao conectar ao banco de dados: %v", err)
-	}
-
-	payClient, err := mercadopago.NewConnection()
-	if err != nil {
-		log.Fatalf("Erro ao conectar ao mercadopago: %v", err)
-	}
 
 	setHealthRouter(router)
 	setCustomerRouter(db, router)
@@ -49,6 +36,7 @@ func setHealthRouter(router *gin.Engine) {
 }
 
 func setCustomerRouter(db *sql.DB, router *gin.Engine) {
+	//mover pro cmd e receber ao inves de db *sql.DB, a interface do New<metodo>
 	customerRepository := persistance.NewCustomerRepository(db)
 	customerService := services.NewCustomerService(customerRepository)
 	customerHandler := handlers.NewCustomerHandler(customerService)
@@ -59,6 +47,7 @@ func setCustomerRouter(db *sql.DB, router *gin.Engine) {
 }
 
 func setProductRouter(db *sql.DB, router *gin.Engine) {
+	//mover pro cmd e receber ao inves de db *sql.DB, a interface do New<metodo>
 	productRepository := persistance.NewProductRepository(db)
 	productService := services.NewProductService(productRepository)
 	productHandler := handlers.NewProductHandler(productService)
@@ -74,8 +63,10 @@ func setProductRouter(db *sql.DB, router *gin.Engine) {
 }
 
 func setOrdersRouter(db *sql.DB, router *gin.Engine) {
+	//mover pro cmd e receber ao inves de db *sql.DB, a interface do New<metodo>
 	orderRepository := persistance.NewOrderRepository(db)
 	productRepository := persistance.NewProductRepository(db)
+
 	productService := services.NewProductService(productRepository)
 	orderService := services.NewOrderService(orderRepository, productService)
 	orderHandler := handlers.NewOrderHandler(orderService)
@@ -88,6 +79,7 @@ func setOrdersRouter(db *sql.DB, router *gin.Engine) {
 }
 
 func setPaymentRouter(payClient order.Client, router *gin.Engine) {
+	//mover pro cmd e receber ao inves de db *sql.DB, a interface do New<metodo>
 	paymentRepository := persistance.NewPaymentRepository(payClient)
 	paymentService := services.NewPaymentService(paymentRepository)
 	paymentHandler := handlers.NewPaymentHandler(paymentService)
@@ -97,6 +89,7 @@ func setPaymentRouter(payClient order.Client, router *gin.Engine) {
 }
 
 func setAdminRouter(db *sql.DB, router *gin.Engine) {
+	//mover pro cmd e receber ao inves de db *sql.DB, a interface do New<metodo>
 	orderRepository := persistance.NewOrderRepository(db)
 	adminService := services.NewAdminService(orderRepository)
 	adminHandler := handlers.NewAdminHandler(adminService)

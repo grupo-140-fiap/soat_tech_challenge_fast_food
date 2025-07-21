@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities/dto"
 )
 
 type ProductRepository interface {

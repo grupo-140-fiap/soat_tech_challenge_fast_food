@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output/repositories"
 )
@@ -43,7 +42,7 @@ func (u *OrderRepository) GetOrders() ([]entities.Order, error) {
 	return orders, nil
 }
 
-func (u *OrderRepository) CreateOrder(order *dto.OrderDTO) error {
+func (u *OrderRepository) CreateOrder(order *entities.Order) error {
 	tx, err := u.db.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
