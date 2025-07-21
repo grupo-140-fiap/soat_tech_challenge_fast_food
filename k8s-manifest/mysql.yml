@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: soat-fast-food
+  labels:
+    app: mysql
+spec:
+  serviceName: "mysql"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_DATABASE
+          value: "soat_fast_food"
+        - name: MYSQL_USER
+          value: "app_user"
+        - name: MYSQL_PASSWORD
+          value: "app_password"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "root_password"
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi # Adjust storage as needed
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-db
+  namespace: soat-fast-food
+  labels:
+    app: mysql
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+
+#mysql-db.soat-fast-food.svc.cluster.local

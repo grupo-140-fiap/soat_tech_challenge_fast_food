@@ -1,0 +1,27 @@
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: soat-fast-food
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: soat-fast-food
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+
+
+# kubectl autoscale deployment soat-fast-food --cpu-percent=50 --min=1 --max=10
+#
+# kubectl get hpa soat-fast-food --watch
+#
+# kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://soat-fast-food; done"

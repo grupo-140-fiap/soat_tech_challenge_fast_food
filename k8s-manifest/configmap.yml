@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: soat-fast-food
+  namespace: soat-fast-food
+data:
+  API_ENV: "development"
+  DB_HOST: "mysql-db.soat-fast-food.svc.cluster.local"
+  DB_PORT: "3306"
+  DB_NAME: "soat_fast_food"
+  DB_USER: "app_user"
+  DB_PASSWORD: "app_password"
+  ACCESSTOKEN: "APP_USR-1789041333533573-052409-76d76765e02a3ab6b030ce2f6e3674bc-2454576917"

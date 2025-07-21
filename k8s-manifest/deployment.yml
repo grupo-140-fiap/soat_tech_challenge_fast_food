@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soat-fast-food
+spec:
+  selector:
+    matchLabels:
+      run: soat-fast-food
+  template:
+    metadata:
+      labels:
+        run: soat-fast-food
+    spec:
+      containers:
+      - name: soat-fast-food
+        image: elvismariel/soat_fast_food:0.1
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+        envFrom:
+        - configMapRef:
+            name: soat-fast-food
