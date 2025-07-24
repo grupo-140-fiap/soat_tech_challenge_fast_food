@@ -10,13 +10,11 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/interface/presenters"
 )
 
-// OrderController handles HTTP requests for order operations
 type OrderController struct {
 	orderUseCase usecases.OrderUseCase
 	presenter    presenters.OrderPresenter
 }
 
-// NewOrderController creates a new order controller
 func NewOrderController(
 	orderUseCase usecases.OrderUseCase,
 	presenter presenters.OrderPresenter,

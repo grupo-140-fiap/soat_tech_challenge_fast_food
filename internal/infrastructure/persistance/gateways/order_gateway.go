@@ -8,19 +8,16 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/repositories"
 )
 
-// orderGateway implements the OrderRepository interface
 type orderGateway struct {
 	db *sql.DB
 }
 
-// NewOrderGateway creates a new order gateway
 func NewOrderGateway(db *sql.DB) repositories.OrderRepository {
 	return &orderGateway{
 		db: db,
 	}
 }
 
-// Create persists a new order
 func (g *orderGateway) Create(order *entities.Order) error {
 	query := `
 		INSERT INTO orders (customer_id, cpf, status, created_at, updated_at)
@@ -48,7 +45,6 @@ func (g *orderGateway) Create(order *entities.Order) error {
 	return nil
 }
 
-// GetByID retrieves an order by ID
 func (g *orderGateway) GetByID(id uint64) (*entities.Order, error) {
 	query := `
 		SELECT id, customer_id, cpf, status, created_at, updated_at
@@ -80,14 +76,12 @@ func (g *orderGateway) GetByID(id uint64) (*entities.Order, error) {
 
 	order.Status = entities.OrderStatus(status)
 
-	// Parse timestamps
 	order.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
 	order.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
 
 	return &order, nil
 }
 
-// GetByCPF retrieves orders by CPF
 func (g *orderGateway) GetByCPF(cpf string) ([]*entities.Order, error) {
 	query := `
 		SELECT id, customer_id, cpf, status, created_at, updated_at
@@ -134,7 +128,6 @@ func (g *orderGateway) GetByCPF(cpf string) ([]*entities.Order, error) {
 	return orders, nil
 }
 
-// GetByCustomerID retrieves orders by customer ID
 func (g *orderGateway) GetByCustomerID(customerID uint64) ([]*entities.Order, error) {
 	query := `
 		SELECT id, customer_id, cpf, status, created_at, updated_at
@@ -181,7 +174,6 @@ func (g *orderGateway) GetByCustomerID(customerID uint64) ([]*entities.Order, er
 	return orders, nil
 }
 
-// GetAll retrieves all orders
 func (g *orderGateway) GetAll() ([]*entities.Order, error) {
 	query := `
 		SELECT id, customer_id, cpf, status, created_at, updated_at
@@ -227,7 +219,6 @@ func (g *orderGateway) GetAll() ([]*entities.Order, error) {
 	return orders, nil
 }
 
-// Update updates an existing order
 func (g *orderGateway) Update(order *entities.Order) error {
 	query := `
 		UPDATE orders
@@ -244,33 +235,27 @@ func (g *orderGateway) Update(order *entities.Order) error {
 	return err
 }
 
-// Delete removes an order
 func (g *orderGateway) Delete(id uint64) error {
-	// First delete order items
 	_, err := g.db.Exec("DELETE FROM order_items WHERE order_id = ?", id)
 	if err != nil {
 		return err
 	}
 
-	// Then delete the order
 	query := `DELETE FROM orders WHERE id = ?`
 	_, err = g.db.Exec(query, id)
 	return err
 }
 
-// orderItemGateway implements the OrderItemRepository interface
 type orderItemGateway struct {
 	db *sql.DB
 }
 
-// NewOrderItemGateway creates a new order item gateway
 func NewOrderItemGateway(db *sql.DB) repositories.OrderItemRepository {
 	return &orderItemGateway{
 		db: db,
 	}
 }
 
-// Create persists a new order item
 func (g *orderItemGateway) Create(orderItem *entities.OrderItem) error {
 	query := `
 		INSERT INTO order_items (order_id, product_id, quantity, price, created_at, updated_at)
@@ -299,7 +284,6 @@ func (g *orderItemGateway) Create(orderItem *entities.OrderItem) error {
 	return nil
 }
 
-// GetByOrderID retrieves order items by order ID
 func (g *orderItemGateway) GetByOrderID(orderID uint64) ([]*entities.OrderItem, error) {
 	query := `
 		SELECT id, order_id, product_id, quantity, price, created_at, updated_at
@@ -334,7 +318,6 @@ func (g *orderItemGateway) GetByOrderID(orderID uint64) ([]*entities.OrderItem, 
 			continue
 		}
 
-		// Parse timestamps
 		item.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
 		item.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
 
@@ -344,7 +327,6 @@ func (g *orderItemGateway) GetByOrderID(orderID uint64) ([]*entities.OrderItem, 
 	return items, nil
 }
 
-// Update updates an existing order item
 func (g *orderItemGateway) Update(orderItem *entities.OrderItem) error {
 	query := `
 		UPDATE order_items
@@ -362,7 +344,6 @@ func (g *orderItemGateway) Update(orderItem *entities.OrderItem) error {
 	return err
 }
 
-// Delete removes an order item
 func (g *orderItemGateway) Delete(id uint64) error {
 	query := `DELETE FROM order_items WHERE id = ?`
 	_, err := g.db.Exec(query, id)

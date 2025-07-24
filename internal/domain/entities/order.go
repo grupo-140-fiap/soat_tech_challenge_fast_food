@@ -2,7 +2,6 @@ package entities
 
 import "time"
 
-// Order represents an order entity in the domain layer.
 type Order struct {
 	ID         uint64      `json:"id"`
 	CustomerId uint64      `json:"customer_id"`
@@ -13,7 +12,6 @@ type Order struct {
 	Items      []OrderItem `json:"items"`
 }
 
-// OrderStatus represents valid order statuses
 type OrderStatus string
 
 const (
@@ -24,7 +22,6 @@ const (
 	OrderCancelled  OrderStatus = "cancelled"
 )
 
-// NewOrder creates a new order
 func NewOrder(customerId uint64, cpf string) *Order {
 	return &Order{
 		CustomerId: customerId,
@@ -36,19 +33,16 @@ func NewOrder(customerId uint64, cpf string) *Order {
 	}
 }
 
-// AddItem adds an item to the order
 func (o *Order) AddItem(item OrderItem) {
 	o.Items = append(o.Items, item)
 	o.UpdatedAt = time.Now()
 }
 
-// UpdateStatus updates the order status
 func (o *Order) UpdateStatus(status OrderStatus) {
 	o.Status = status
 	o.UpdatedAt = time.Now()
 }
 
-// CalculateTotal calculates the total order value
 func (o *Order) CalculateTotal() float32 {
 	var total float32
 	for _, item := range o.Items {
@@ -57,7 +51,6 @@ func (o *Order) CalculateTotal() float32 {
 	return total
 }
 
-// IsValid validates order business rules
 func (o *Order) IsValid() bool {
 	return len(o.Items) > 0 && o.CPF != ""
 }

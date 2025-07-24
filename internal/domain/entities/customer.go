@@ -2,8 +2,6 @@ package entities
 
 import "time"
 
-// Customer represents a customer entity in the domain layer.
-// This is the core business entity with all domain logic.
 type Customer struct {
 	ID        uint64    `json:"id"`
 	FirstName string    `json:"first_name"`
@@ -14,7 +12,6 @@ type Customer struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// NewCustomer creates a new customer with business validations
 func NewCustomer(firstName, lastName, cpf, email string) *Customer {
 	return &Customer{
 		FirstName: firstName,
@@ -26,7 +23,6 @@ func NewCustomer(firstName, lastName, cpf, email string) *Customer {
 	}
 }
 
-// UpdateCustomer updates customer information
 func (c *Customer) UpdateCustomer(firstName, lastName, email string) {
 	c.FirstName = firstName
 	c.LastName = lastName
@@ -34,7 +30,6 @@ func (c *Customer) UpdateCustomer(firstName, lastName, email string) {
 	c.UpdatedAt = time.Now()
 }
 
-// IsValid validates customer business rules
 func (c *Customer) IsValid() bool {
 	return c.FirstName != "" && c.LastName != "" && c.CPF != "" && c.Email != ""
 }

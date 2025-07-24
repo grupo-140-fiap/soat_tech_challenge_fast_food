@@ -10,13 +10,11 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/interface/presenters"
 )
 
-// ProductController handles HTTP requests for product operations
 type ProductController struct {
 	productUseCase usecases.ProductUseCase
 	presenter      presenters.ProductPresenter
 }
 
-// NewProductController creates a new product controller
 func NewProductController(
 	productUseCase usecases.ProductUseCase,
 	presenter presenters.ProductPresenter,

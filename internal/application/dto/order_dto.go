@@ -1,19 +1,16 @@
 package dto
 
-// CreateOrderRequest represents the request to create a new order
 type CreateOrderRequest struct {
 	CustomerId uint64             `json:"customer_id" example:"123"`
 	CPF        string             `json:"cpf" binding:"required" example:"123.456.789-00"`
 	Items      []OrderItemRequest `json:"items" binding:"required,dive"`
 }
 
-// OrderItemRequest represents an item in an order request
 type OrderItemRequest struct {
 	ProductID uint64 `json:"product_id" binding:"required" example:"200"`
 	Quantity  uint32 `json:"quantity" binding:"required,gt=0" example:"2"`
 }
 
-// OrderResponse represents the response for order operations
 type OrderResponse struct {
 	ID         uint64              `json:"id" example:"1"`
 	CustomerId uint64              `json:"customer_id" example:"123"`
@@ -25,7 +22,6 @@ type OrderResponse struct {
 	UpdatedAt  string              `json:"updated_at" example:"2024-06-01T12:30:00Z"`
 }
 
-// OrderItemResponse represents an item in an order response
 type OrderItemResponse struct {
 	ID        uint64  `json:"id" example:"1"`
 	ProductID uint64  `json:"product_id" example:"200"`
@@ -34,7 +30,6 @@ type OrderItemResponse struct {
 	Subtotal  float32 `json:"subtotal" example:"39.98"`
 }
 
-// UpdateOrderStatusRequest represents the request to update order status
 type UpdateOrderStatusRequest struct {
 	Status string `json:"status" binding:"required" example:"in_progress"`
 }

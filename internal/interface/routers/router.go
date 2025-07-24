@@ -10,40 +10,31 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/interface/presenters"
 )
 
-// RouterConfig holds the configuration for setting up routes
 type RouterConfig struct {
 	Engine *gin.Engine
 	DB     *sql.DB
 }
 
-// SetupRoutes configures all routes and dependencies following Clean Architecture
-// This is the composition root where all dependencies are injected
 func SetupRoutes(config RouterConfig) {
-	// Initialize Gateways (Infrastructure layer)
 	customerGateway := gateways.NewCustomerGateway(config.DB)
 	productGateway := gateways.NewProductGateway(config.DB)
 	orderGateway := gateways.NewOrderGateway(config.DB)
 	orderItemGateway := gateways.NewOrderItemGateway(config.DB)
 
-	// Initialize Use Cases (Application layer)
 	customerUseCase := usecases.NewCustomerUseCase(customerGateway)
 	productUseCase := usecases.NewProductUseCase(productGateway)
 	orderUseCase := usecases.NewOrderUseCase(orderGateway, orderItemGateway, productGateway)
 
-	// Initialize Presenters (Interface layer)
 	customerPresenter := presenters.NewCustomerPresenter()
 	productPresenter := presenters.NewProductPresenter()
 	orderPresenter := presenters.NewOrderPresenter()
 
-	// Initialize Controllers (Interface layer)
 	customerController := controllers.NewCustomerController(customerUseCase, customerPresenter)
 	productController := controllers.NewProductController(productUseCase, productPresenter)
 	orderController := controllers.NewOrderController(orderUseCase, orderPresenter)
 
-	// Setup API routes
 	api := config.Engine.Group("/api/v1")
 	{
-		// Customer routes
 		customers := api.Group("/customers")
 		{
 			customers.POST("", customerController.CreateCustomer)
@@ -53,7 +44,6 @@ func SetupRoutes(config RouterConfig) {
 			customers.DELETE("/:id", customerController.DeleteCustomer)
 		}
 
-		// Product routes
 		products := api.Group("/products")
 		{
 			products.POST("", productController.CreateProduct)
@@ -64,7 +54,6 @@ func SetupRoutes(config RouterConfig) {
 			products.DELETE("/:id", productController.DeleteProduct)
 		}
 
-		// Order routes
 		orders := api.Group("/orders")
 		{
 			orders.POST("", orderController.CreateOrder)
@@ -77,7 +66,6 @@ func SetupRoutes(config RouterConfig) {
 		}
 	}
 
-	// Health check route
 	config.Engine.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status":  "ok",

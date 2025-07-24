@@ -8,8 +8,6 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/repositories"
 )
 
-// ProductUseCase defines the interface for product business operations
-// Following Interface Segregation Principle
 type ProductUseCase interface {
 	CreateProduct(request *dto.CreateProductRequest) (*dto.ProductResponse, error)
 	GetProductByID(id uint64) (*dto.ProductResponse, error)
@@ -19,26 +17,21 @@ type ProductUseCase interface {
 	DeleteProduct(id uint64) error
 }
 
-// productUseCase implements ProductUseCase interface
 type productUseCase struct {
 	productRepo repositories.ProductRepository
 }
 
-// NewProductUseCase creates a new product use case
 func NewProductUseCase(productRepo repositories.ProductRepository) ProductUseCase {
 	return &productUseCase{
 		productRepo: productRepo,
 	}
 }
 
-// CreateProduct creates a new product
 func (uc *productUseCase) CreateProduct(request *dto.CreateProductRequest) (*dto.ProductResponse, error) {
-	// Business validation for category
 	if !entities.IsValidCategory(request.Category) {
 		return nil, errors.New("invalid product category")
 	}
 
-	// Create domain entity
 	product := entities.NewProduct(
 		request.Name,
 		request.Description,
@@ -47,18 +40,15 @@ func (uc *productUseCase) CreateProduct(request *dto.CreateProductRequest) (*dto
 		request.ImageUrl,
 	)
 
-	// Business validation
 	if !product.IsValid() {
 		return nil, errors.New("invalid product data")
 	}
 
-	// Persist entity
 	err := uc.productRepo.Create(product)
 	if err != nil {
 		return nil, err
 	}
 
-	// Return response DTO
 	return &dto.ProductResponse{
 		ID:          product.ID,
 		Name:        product.Name,
@@ -71,7 +61,6 @@ func (uc *productUseCase) CreateProduct(request *dto.CreateProductRequest) (*dto
 	}, nil
 }
 
-// GetProductByID retrieves a product by ID
 func (uc *productUseCase) GetProductByID(id uint64) (*dto.ProductResponse, error) {
 	product, err := uc.productRepo.GetByID(id)
 	if err != nil {
@@ -94,9 +83,7 @@ func (uc *productUseCase) GetProductByID(id uint64) (*dto.ProductResponse, error
 	}, nil
 }
 
-// GetProductsByCategory retrieves products by category
 func (uc *productUseCase) GetProductsByCategory(category string) ([]*dto.ProductResponse, error) {
-	// Business validation for category
 	if !entities.IsValidCategory(category) {
 		return nil, errors.New("invalid product category")
 	}
@@ -123,7 +110,6 @@ func (uc *productUseCase) GetProductsByCategory(category string) ([]*dto.Product
 	return response, nil
 }
 
-// GetAllProducts retrieves all products
 func (uc *productUseCase) GetAllProducts() ([]*dto.ProductResponse, error) {
 	products, err := uc.productRepo.GetAll()
 	if err != nil {
@@ -147,9 +133,7 @@ func (uc *productUseCase) GetAllProducts() ([]*dto.ProductResponse, error) {
 	return response, nil
 }
 
-// UpdateProduct updates an existing product
 func (uc *productUseCase) UpdateProduct(id uint64, request *dto.UpdateProductRequest) (*dto.ProductResponse, error) {
-	// Business validation for category
 	if !entities.IsValidCategory(request.Category) {
 		return nil, errors.New("invalid product category")
 	}
@@ -163,7 +147,6 @@ func (uc *productUseCase) UpdateProduct(id uint64, request *dto.UpdateProductReq
 		return nil, errors.New("product not found")
 	}
 
-	// Update entity using domain method
 	product.UpdateProduct(
 		request.Name,
 		request.Description,
@@ -172,12 +155,10 @@ func (uc *productUseCase) UpdateProduct(id uint64, request *dto.UpdateProductReq
 		request.ImageUrl,
 	)
 
-	// Business validation
 	if !product.IsValid() {
 		return nil, errors.New("invalid product data")
 	}
 
-	// Persist changes
 	err = uc.productRepo.Update(product)
 	if err != nil {
 		return nil, err
@@ -195,7 +176,6 @@ func (uc *productUseCase) UpdateProduct(id uint64, request *dto.UpdateProductReq
 	}, nil
 }
 
-// DeleteProduct deletes a product
 func (uc *productUseCase) DeleteProduct(id uint64) error {
 	product, err := uc.productRepo.GetByID(id)
 	if err != nil {

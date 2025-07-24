@@ -10,14 +10,11 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/interface/presenters"
 )
 
-// CustomerController handles HTTP requests for customer operations
-// Following Clean Architecture principles and Dependency Inversion
 type CustomerController struct {
 	customerUseCase usecases.CustomerUseCase
 	presenter       presenters.CustomerPresenter
 }
 
-// NewCustomerController creates a new customer controller
 func NewCustomerController(
 	customerUseCase usecases.CustomerUseCase,
 	presenter presenters.CustomerPresenter,

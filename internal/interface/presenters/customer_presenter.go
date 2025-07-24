@@ -4,8 +4,6 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 )
 
-// CustomerPresenter handles the presentation logic for customer responses
-// Following the Single Responsibility Principle
 type CustomerPresenter interface {
 	PresentCustomer(customer *dto.CustomerResponse) interface{}
 	PresentCustomers(customers []*dto.CustomerResponse) interface{}
@@ -13,15 +11,12 @@ type CustomerPresenter interface {
 	PresentSuccess(message string) interface{}
 }
 
-// customerPresenter implements CustomerPresenter interface
 type customerPresenter struct{}
 
-// NewCustomerPresenter creates a new customer presenter
 func NewCustomerPresenter() CustomerPresenter {
 	return &customerPresenter{}
 }
 
-// PresentCustomer formats a single customer response
 func (p *customerPresenter) PresentCustomer(customer *dto.CustomerResponse) interface{} {
 	if customer == nil {
 		return map[string]interface{}{
@@ -38,7 +33,6 @@ func (p *customerPresenter) PresentCustomer(customer *dto.CustomerResponse) inte
 	}
 }
 
-// PresentCustomers formats multiple customer responses
 func (p *customerPresenter) PresentCustomers(customers []*dto.CustomerResponse) interface{} {
 	return map[string]interface{}{
 		"success": true,
@@ -48,7 +42,6 @@ func (p *customerPresenter) PresentCustomers(customers []*dto.CustomerResponse) 
 	}
 }
 
-// PresentError formats error responses
 func (p *customerPresenter) PresentError(err error) interface{} {
 	return map[string]interface{}{
 		"success": false,
@@ -57,7 +50,6 @@ func (p *customerPresenter) PresentError(err error) interface{} {
 	}
 }
 
-// PresentSuccess formats success responses
 func (p *customerPresenter) PresentSuccess(message string) interface{} {
 	return map[string]interface{}{
 		"success": true,

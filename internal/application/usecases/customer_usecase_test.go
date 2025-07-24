@@ -9,7 +9,6 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
 )
 
-// MockCustomerRepository é um mock do repositório de clientes para testes
 type MockCustomerRepository struct {
 	customers map[string]*entities.Customer
 	nextID    uint64

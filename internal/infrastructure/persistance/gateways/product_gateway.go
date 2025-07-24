@@ -9,20 +9,16 @@ import (
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/repositories"
 )
 
-// productGateway implements the ProductRepository interface
-// This is the gateway that handles data persistence for products
 type productGateway struct {
 	db *sql.DB
 }
 
-// NewProductGateway creates a new product gateway
 func NewProductGateway(db *sql.DB) repositories.ProductRepository {
 	return &productGateway{
 		db: db,
 	}
 }
 
-// Create persists a new product
 func (g *productGateway) Create(product *entities.Product) error {
 	query := `
 		INSERT INTO products (name, description, price, category, image_url, created_at, updated_at)
@@ -52,7 +48,6 @@ func (g *productGateway) Create(product *entities.Product) error {
 	return nil
 }
 
-// GetByID retrieves a product by ID
 func (g *productGateway) GetByID(id uint64) (*entities.Product, error) {
 	query := `
 		SELECT id, name, description, price, category, image_url, created_at, updated_at
@@ -96,7 +91,6 @@ func (g *productGateway) GetByID(id uint64) (*entities.Product, error) {
 	return &product, nil
 }
 
-// GetByCategory retrieves products by category
 func (g *productGateway) GetByCategory(category string) ([]*entities.Product, error) {
 	query := `
 		SELECT id, name, description, price, category, image_url, created_at, updated_at
@@ -148,7 +142,6 @@ func (g *productGateway) GetByCategory(category string) ([]*entities.Product, er
 	return products, nil
 }
 
-// GetAll retrieves all products
 func (g *productGateway) GetAll() ([]*entities.Product, error) {
 	query := `
 		SELECT id, name, description, price, category, image_url, created_at, updated_at
@@ -199,7 +192,6 @@ func (g *productGateway) GetAll() ([]*entities.Product, error) {
 	return products, nil
 }
 
-// Update updates an existing product
 func (g *productGateway) Update(product *entities.Product) error {
 	query := `
 		UPDATE products
@@ -220,7 +212,6 @@ func (g *productGateway) Update(product *entities.Product) error {
 	return err
 }
 
-// Delete removes a product
 func (g *productGateway) Delete(id uint64) error {
 	query := `DELETE FROM products WHERE id = ?`
 	_, err := g.db.Exec(query, id)
