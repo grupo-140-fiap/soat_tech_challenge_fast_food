@@ -52,5 +52,5 @@ func (o *Order) CalculateTotal() float32 {
 }
 
 func (o *Order) IsValid() bool {
-	return len(o.Items) > 0 && o.CPF != ""
+	return len(o.Items) > 0
 }

@@ -2,7 +2,7 @@ package dto
 
 type CreateOrderRequest struct {
 	CustomerId uint64             `json:"customer_id" example:"123"`
-	CPF        string             `json:"cpf" binding:"required" example:"123.456.789-00"`
+	CPF        string             `json:"cpf" example:"123.456.789-00"`
 	Items      []OrderItemRequest `json:"items" binding:"required,dive"`
 }
 
