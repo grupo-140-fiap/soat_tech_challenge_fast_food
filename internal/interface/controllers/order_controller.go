@@ -160,7 +160,7 @@ func (ctrl *OrderController) GetAllOrders(c *gin.Context) {
 
 // GetOrdersForKitchen godoc
 // @Summary Get orders for kitchen
-// @Description Get orders for kitchen with priority ordering (Ready > In Progress > Received) and oldest first. Completed orders are excluded.
+// @Description Get orders for kitchen with priority ordering (Ready > In Progress > Received) and oldest first. Orders awaiting payment and completed orders are excluded.
 // @Tags orders
 // @Produce json
 // @Success 200 {object} map[string]interface{}

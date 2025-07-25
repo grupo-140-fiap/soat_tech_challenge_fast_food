@@ -15,18 +15,19 @@ type Order struct {
 type OrderStatus string
 
 const (
-	OrderReceived   OrderStatus = "received"
-	OrderInProgress OrderStatus = "in_progress"
-	OrderReady      OrderStatus = "ready"
-	OrderCompleted  OrderStatus = "completed"
-	OrderCancelled  OrderStatus = "cancelled"
+	OrderAwaitingPayment OrderStatus = "awaiting_payment"
+	OrderReceived        OrderStatus = "received"
+	OrderInProgress      OrderStatus = "in_progress"
+	OrderReady           OrderStatus = "ready"
+	OrderCompleted       OrderStatus = "completed"
+	OrderCancelled       OrderStatus = "cancelled"
 )
 
 func NewOrder(customerId uint64, cpf string) *Order {
 	return &Order{
 		CustomerId: customerId,
 		CPF:        cpf,
-		Status:     OrderReceived,
+		Status:     OrderAwaitingPayment,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 		Items:      make([]OrderItem, 0),

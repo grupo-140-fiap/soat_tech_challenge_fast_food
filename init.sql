@@ -14,7 +14,7 @@ CREATE TABLE orders (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     customer_id BIGINT UNSIGNED NULL REFERENCES customers(id),
     cpf         VARCHAR(14) NULL,
-    status      ENUM('received', 'preparation', 'ready', 'completed'),
+    status      ENUM('awaiting_payment', 'received', 'in_progress', 'ready', 'completed', 'cancelled'),
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -31,5 +31,5 @@ type OrderItemResponse struct {
 }
 
 type UpdateOrderStatusRequest struct {
-	Status string `json:"status" binding:"required" example:"in_progress"`
+	Status string `json:"status" binding:"required" example:"received" enums:"awaiting_payment,received,in_progress,ready,completed,cancelled"`
 }
