@@ -14,6 +14,7 @@ type OrderUseCase interface {
 	GetOrdersByCPF(cpf string) ([]*dto.OrderResponse, error)
 	GetOrdersByCustomerID(customerID uint64) ([]*dto.OrderResponse, error)
 	GetAllOrders() ([]*dto.OrderResponse, error)
+	GetOrdersForKitchen() ([]*dto.OrderResponse, error)
 	UpdateOrderStatus(id uint64, request *dto.UpdateOrderStatusRequest) (*dto.OrderResponse, error)
 	DeleteOrder(id uint64) error
 }
@@ -152,6 +153,31 @@ func (uc *orderUseCase) GetOrdersByCustomerID(customerID uint64) ([]*dto.OrderRe
 
 func (uc *orderUseCase) GetAllOrders() ([]*dto.OrderResponse, error) {
 	orders, err := uc.orderRepo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var response []*dto.OrderResponse
+	for _, order := range orders {
+		items, err := uc.orderItemRepo.GetByOrderID(order.ID)
+		if err != nil {
+			continue
+		}
+
+		var orderItems []entities.OrderItem
+		for _, item := range items {
+			orderItems = append(orderItems, *item)
+		}
+		order.Items = orderItems
+
+		response = append(response, uc.buildOrderResponse(order))
+	}
+
+	return response, nil
+}
+
+func (uc *orderUseCase) GetOrdersForKitchen() ([]*dto.OrderResponse, error) {
+	orders, err := uc.orderRepo.GetPendingOrdersForKitchen()
 	if err != nil {
 		return nil, err
 	}

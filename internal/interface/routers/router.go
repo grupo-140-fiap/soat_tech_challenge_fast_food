@@ -58,9 +58,10 @@ func SetupRoutes(config RouterConfig) {
 		{
 			orders.POST("", orderController.CreateOrder)
 			orders.GET("", orderController.GetAllOrders)
-			orders.GET("/:id", orderController.GetOrderByID)
+			orders.GET("/kitchen", orderController.GetOrdersForKitchen)
 			orders.GET("/cpf/:cpf", orderController.GetOrdersByCPF)
 			orders.GET("/customer/:customerId", orderController.GetOrdersByCustomerID)
+			orders.GET("/:id", orderController.GetOrderByID)
 			orders.PUT("/:id/status", orderController.UpdateOrderStatus)
 			orders.DELETE("/:id", orderController.DeleteOrder)
 		}

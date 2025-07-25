@@ -8,6 +8,7 @@ type OrderRepository interface {
 	GetByCPF(cpf string) ([]*entities.Order, error)
 	GetByCustomerID(customerID uint64) ([]*entities.Order, error)
 	GetAll() ([]*entities.Order, error)
+	GetPendingOrdersForKitchen() ([]*entities.Order, error)
 	Update(order *entities.Order) error
 	Delete(id uint64) error
 }

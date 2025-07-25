@@ -158,6 +158,26 @@ func (ctrl *OrderController) GetAllOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// GetOrdersForKitchen godoc
+// @Summary Get orders for kitchen
+// @Description Get orders for kitchen with priority ordering (Ready > In Progress > Received) and oldest first. Completed orders are excluded.
+// @Tags orders
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /orders/kitchen [get]
+func (ctrl *OrderController) GetOrdersForKitchen(c *gin.Context) {
+	orders, err := ctrl.orderUseCase.GetOrdersForKitchen()
+	if err != nil {
+		response := ctrl.presenter.PresentError(err)
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	response := ctrl.presenter.PresentOrders(orders)
+	c.JSON(http.StatusOK, response)
+}
+
 // UpdateOrderStatus godoc
 // @Summary Update order status
 // @Description Update the status of an existing order

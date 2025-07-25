@@ -219,6 +219,57 @@ func (g *orderGateway) GetAll() ([]*entities.Order, error) {
 	return orders, nil
 }
 
+func (g *orderGateway) GetPendingOrdersForKitchen() ([]*entities.Order, error) {
+	query := `
+		SELECT id, customer_id, cpf, status, created_at, updated_at
+		FROM orders
+		WHERE status IN ('received', 'in_progress', 'ready')
+		ORDER BY 
+			CASE status
+				WHEN 'ready' THEN 1
+				WHEN 'in_progress' THEN 2
+				WHEN 'received' THEN 3
+			END,
+			created_at ASC
+	`
+
+	rows, err := g.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var orders []*entities.Order
+
+	for rows.Next() {
+		var order entities.Order
+		var status string
+		var createdAt, updatedAt string
+
+		err := rows.Scan(
+			&order.ID,
+			&order.CustomerId,
+			&order.CPF,
+			&status,
+			&createdAt,
+			&updatedAt,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		order.Status = entities.OrderStatus(status)
+
+		order.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+		order.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+
+		orders = append(orders, &order)
+	}
+
+	return orders, nil
+}
+
 func (g *orderGateway) Update(order *entities.Order) error {
 	query := `
 		UPDATE orders
