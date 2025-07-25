@@ -1,8 +1,9 @@
-package repositories
+package output
 
 import "github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
 
-type OrderRepository interface {
+// OrderGateway defines the contract for order data access operations
+type OrderGateway interface {
 	Create(order *entities.Order) error
 	GetByID(id uint64) (*entities.Order, error)
 	GetByCPF(cpf string) ([]*entities.Order, error)
@@ -13,7 +14,8 @@ type OrderRepository interface {
 	Delete(id uint64) error
 }
 
-type OrderItemRepository interface {
+// OrderItemGateway defines the contract for order item data access operations
+type OrderItemGateway interface {
 	Create(orderItem *entities.OrderItem) error
 	GetByOrderID(orderID uint64) ([]*entities.OrderItem, error)
 	Update(orderItem *entities.OrderItem) error

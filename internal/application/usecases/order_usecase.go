@@ -5,35 +5,25 @@ import (
 
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/repositories"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/input"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output"
 )
 
-type OrderUseCase interface {
-	CreateOrder(request *dto.CreateOrderRequest) (*dto.OrderResponse, error)
-	GetOrderByID(id uint64) (*dto.OrderResponse, error)
-	GetOrdersByCPF(cpf string) ([]*dto.OrderResponse, error)
-	GetOrdersByCustomerID(customerID uint64) ([]*dto.OrderResponse, error)
-	GetAllOrders() ([]*dto.OrderResponse, error)
-	GetOrdersForKitchen() ([]*dto.OrderResponse, error)
-	UpdateOrderStatus(id uint64, request *dto.UpdateOrderStatusRequest) (*dto.OrderResponse, error)
-	DeleteOrder(id uint64) error
-}
-
 type orderUseCase struct {
-	orderRepo     repositories.OrderRepository
-	orderItemRepo repositories.OrderItemRepository
-	productRepo   repositories.ProductRepository
+	orderGateway     output.OrderGateway
+	orderItemGateway output.OrderItemGateway
+	productGateway   output.ProductGateway
 }
 
 func NewOrderUseCase(
-	orderRepo repositories.OrderRepository,
-	orderItemRepo repositories.OrderItemRepository,
-	productRepo repositories.ProductRepository,
-) OrderUseCase {
+	orderGateway output.OrderGateway,
+	orderItemGateway output.OrderItemGateway,
+	productGateway output.ProductGateway,
+) input.OrderUseCase {
 	return &orderUseCase{
-		orderRepo:     orderRepo,
-		orderItemRepo: orderItemRepo,
-		productRepo:   productRepo,
+		orderGateway:     orderGateway,
+		orderItemGateway: orderItemGateway,
+		productGateway:   productGateway,
 	}
 }
 
@@ -42,7 +32,7 @@ func (uc *orderUseCase) CreateOrder(request *dto.CreateOrderRequest) (*dto.Order
 
 	var totalPrice float32
 	for _, itemReq := range request.Items {
-		product, err := uc.productRepo.GetByID(itemReq.ProductID)
+		product, err := uc.productGateway.GetByID(itemReq.ProductID)
 		if err != nil || product == nil {
 			return nil, errors.New("product not found")
 		}
@@ -61,14 +51,14 @@ func (uc *orderUseCase) CreateOrder(request *dto.CreateOrderRequest) (*dto.Order
 		return nil, errors.New("invalid order data")
 	}
 
-	err := uc.orderRepo.Create(order)
+	err := uc.orderGateway.Create(order)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, item := range order.Items {
 		item.OrderID = order.ID
-		err := uc.orderItemRepo.Create(&item)
+		err := uc.orderItemGateway.Create(&item)
 		if err != nil {
 			return nil, err
 		}
@@ -78,7 +68,7 @@ func (uc *orderUseCase) CreateOrder(request *dto.CreateOrderRequest) (*dto.Order
 }
 
 func (uc *orderUseCase) GetOrderByID(id uint64) (*dto.OrderResponse, error) {
-	order, err := uc.orderRepo.GetByID(id)
+	order, err := uc.orderGateway.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +77,7 @@ func (uc *orderUseCase) GetOrderByID(id uint64) (*dto.OrderResponse, error) {
 		return nil, errors.New("order not found")
 	}
 
-	items, err := uc.orderItemRepo.GetByOrderID(id)
+	items, err := uc.orderItemGateway.GetByOrderID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -102,14 +92,14 @@ func (uc *orderUseCase) GetOrderByID(id uint64) (*dto.OrderResponse, error) {
 }
 
 func (uc *orderUseCase) GetOrdersByCPF(cpf string) ([]*dto.OrderResponse, error) {
-	orders, err := uc.orderRepo.GetByCPF(cpf)
+	orders, err := uc.orderGateway.GetByCPF(cpf)
 	if err != nil {
 		return nil, err
 	}
 
 	var response []*dto.OrderResponse
 	for _, order := range orders {
-		items, err := uc.orderItemRepo.GetByOrderID(order.ID)
+		items, err := uc.orderItemGateway.GetByOrderID(order.ID)
 		if err != nil {
 			continue
 		}
@@ -127,14 +117,14 @@ func (uc *orderUseCase) GetOrdersByCPF(cpf string) ([]*dto.OrderResponse, error)
 }
 
 func (uc *orderUseCase) GetOrdersByCustomerID(customerID uint64) ([]*dto.OrderResponse, error) {
-	orders, err := uc.orderRepo.GetByCustomerID(customerID)
+	orders, err := uc.orderGateway.GetByCustomerID(customerID)
 	if err != nil {
 		return nil, err
 	}
 
 	var response []*dto.OrderResponse
 	for _, order := range orders {
-		items, err := uc.orderItemRepo.GetByOrderID(order.ID)
+		items, err := uc.orderItemGateway.GetByOrderID(order.ID)
 		if err != nil {
 			continue
 		}
@@ -152,14 +142,14 @@ func (uc *orderUseCase) GetOrdersByCustomerID(customerID uint64) ([]*dto.OrderRe
 }
 
 func (uc *orderUseCase) GetAllOrders() ([]*dto.OrderResponse, error) {
-	orders, err := uc.orderRepo.GetAll()
+	orders, err := uc.orderGateway.GetAll()
 	if err != nil {
 		return nil, err
 	}
 
 	var response []*dto.OrderResponse
 	for _, order := range orders {
-		items, err := uc.orderItemRepo.GetByOrderID(order.ID)
+		items, err := uc.orderItemGateway.GetByOrderID(order.ID)
 		if err != nil {
 			continue
 		}
@@ -177,14 +167,14 @@ func (uc *orderUseCase) GetAllOrders() ([]*dto.OrderResponse, error) {
 }
 
 func (uc *orderUseCase) GetOrdersForKitchen() ([]*dto.OrderResponse, error) {
-	orders, err := uc.orderRepo.GetPendingOrdersForKitchen()
+	orders, err := uc.orderGateway.GetPendingOrdersForKitchen()
 	if err != nil {
 		return nil, err
 	}
 
 	var response []*dto.OrderResponse
 	for _, order := range orders {
-		items, err := uc.orderItemRepo.GetByOrderID(order.ID)
+		items, err := uc.orderItemGateway.GetByOrderID(order.ID)
 		if err != nil {
 			continue
 		}
@@ -202,7 +192,7 @@ func (uc *orderUseCase) GetOrdersForKitchen() ([]*dto.OrderResponse, error) {
 }
 
 func (uc *orderUseCase) UpdateOrderStatus(id uint64, request *dto.UpdateOrderStatusRequest) (*dto.OrderResponse, error) {
-	order, err := uc.orderRepo.GetByID(id)
+	order, err := uc.orderGateway.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -213,12 +203,12 @@ func (uc *orderUseCase) UpdateOrderStatus(id uint64, request *dto.UpdateOrderSta
 
 	order.UpdateStatus(entities.OrderStatus(request.Status))
 
-	err = uc.orderRepo.Update(order)
+	err = uc.orderGateway.Update(order)
 	if err != nil {
 		return nil, err
 	}
 
-	items, err := uc.orderItemRepo.GetByOrderID(id)
+	items, err := uc.orderItemGateway.GetByOrderID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -233,7 +223,7 @@ func (uc *orderUseCase) UpdateOrderStatus(id uint64, request *dto.UpdateOrderSta
 }
 
 func (uc *orderUseCase) DeleteOrder(id uint64) error {
-	order, err := uc.orderRepo.GetByID(id)
+	order, err := uc.orderGateway.GetByID(id)
 	if err != nil {
 		return err
 	}
@@ -242,7 +232,7 @@ func (uc *orderUseCase) DeleteOrder(id uint64) error {
 		return errors.New("order not found")
 	}
 
-	return uc.orderRepo.Delete(id)
+	return uc.orderGateway.Delete(id)
 }
 
 func (uc *orderUseCase) buildOrderResponse(order *entities.Order) *dto.OrderResponse {

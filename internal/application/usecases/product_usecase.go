@@ -5,25 +5,17 @@ import (
 
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/repositories"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/input"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output"
 )
 
-type ProductUseCase interface {
-	CreateProduct(request *dto.CreateProductRequest) (*dto.ProductResponse, error)
-	GetProductByID(id uint64) (*dto.ProductResponse, error)
-	GetProductsByCategory(category string) ([]*dto.ProductResponse, error)
-	GetAllProducts() ([]*dto.ProductResponse, error)
-	UpdateProduct(id uint64, request *dto.UpdateProductRequest) (*dto.ProductResponse, error)
-	DeleteProduct(id uint64) error
-}
-
 type productUseCase struct {
-	productRepo repositories.ProductRepository
+	productGateway output.ProductGateway
 }
 
-func NewProductUseCase(productRepo repositories.ProductRepository) ProductUseCase {
+func NewProductUseCase(productGateway output.ProductGateway) input.ProductUseCase {
 	return &productUseCase{
-		productRepo: productRepo,
+		productGateway: productGateway,
 	}
 }
 
@@ -44,7 +36,7 @@ func (uc *productUseCase) CreateProduct(request *dto.CreateProductRequest) (*dto
 		return nil, errors.New("invalid product data")
 	}
 
-	err := uc.productRepo.Create(product)
+	err := uc.productGateway.Create(product)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +54,7 @@ func (uc *productUseCase) CreateProduct(request *dto.CreateProductRequest) (*dto
 }
 
 func (uc *productUseCase) GetProductByID(id uint64) (*dto.ProductResponse, error) {
-	product, err := uc.productRepo.GetByID(id)
+	product, err := uc.productGateway.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +80,7 @@ func (uc *productUseCase) GetProductsByCategory(category string) ([]*dto.Product
 		return nil, errors.New("invalid product category")
 	}
 
-	products, err := uc.productRepo.GetByCategory(category)
+	products, err := uc.productGateway.GetByCategory(category)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +103,7 @@ func (uc *productUseCase) GetProductsByCategory(category string) ([]*dto.Product
 }
 
 func (uc *productUseCase) GetAllProducts() ([]*dto.ProductResponse, error) {
-	products, err := uc.productRepo.GetAll()
+	products, err := uc.productGateway.GetAll()
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +130,7 @@ func (uc *productUseCase) UpdateProduct(id uint64, request *dto.UpdateProductReq
 		return nil, errors.New("invalid product category")
 	}
 
-	product, err := uc.productRepo.GetByID(id)
+	product, err := uc.productGateway.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +151,7 @@ func (uc *productUseCase) UpdateProduct(id uint64, request *dto.UpdateProductReq
 		return nil, errors.New("invalid product data")
 	}
 
-	err = uc.productRepo.Update(product)
+	err = uc.productGateway.Update(product)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +169,7 @@ func (uc *productUseCase) UpdateProduct(id uint64, request *dto.UpdateProductReq
 }
 
 func (uc *productUseCase) DeleteProduct(id uint64) error {
-	product, err := uc.productRepo.GetByID(id)
+	product, err := uc.productGateway.GetByID(id)
 	if err != nil {
 		return err
 	}
@@ -186,5 +178,5 @@ func (uc *productUseCase) DeleteProduct(id uint64) error {
 		return errors.New("product not found")
 	}
 
-	return uc.productRepo.Delete(id)
+	return uc.productGateway.Delete(id)
 }

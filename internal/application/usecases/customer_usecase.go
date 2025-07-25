@@ -5,24 +5,17 @@ import (
 
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/repositories"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/input"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output"
 )
 
-type CustomerUseCase interface {
-	CreateCustomer(request *dto.CreateCustomerRequest) (*dto.CustomerResponse, error)
-	GetCustomerByCPF(cpf string) (*dto.CustomerResponse, error)
-	GetCustomerByID(id uint64) (*dto.CustomerResponse, error)
-	UpdateCustomer(id uint64, request *dto.UpdateCustomerRequest) (*dto.CustomerResponse, error)
-	DeleteCustomer(id uint64) error
-}
-
 type customerUseCase struct {
-	customerRepo repositories.CustomerRepository
+	customerGateway output.CustomerGateway
 }
 
-func NewCustomerUseCase(customerRepo repositories.CustomerRepository) CustomerUseCase {
+func NewCustomerUseCase(customerGateway output.CustomerGateway) input.CustomerUseCase {
 	return &customerUseCase{
-		customerRepo: customerRepo,
+		customerGateway: customerGateway,
 	}
 }
 
@@ -33,12 +26,12 @@ func (uc *customerUseCase) CreateCustomer(request *dto.CreateCustomerRequest) (*
 		return nil, errors.New("invalid customer data")
 	}
 
-	existingCustomer, _ := uc.customerRepo.GetByCPF(request.CPF)
+	existingCustomer, _ := uc.customerGateway.GetByCPF(request.CPF)
 	if existingCustomer != nil {
 		return nil, errors.New("customer with this CPF already exists")
 	}
 
-	err := uc.customerRepo.Create(customer)
+	err := uc.customerGateway.Create(customer)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +48,7 @@ func (uc *customerUseCase) CreateCustomer(request *dto.CreateCustomerRequest) (*
 }
 
 func (uc *customerUseCase) GetCustomerByCPF(cpf string) (*dto.CustomerResponse, error) {
-	customer, err := uc.customerRepo.GetByCPF(cpf)
+	customer, err := uc.customerGateway.GetByCPF(cpf)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +69,7 @@ func (uc *customerUseCase) GetCustomerByCPF(cpf string) (*dto.CustomerResponse, 
 }
 
 func (uc *customerUseCase) GetCustomerByID(id uint64) (*dto.CustomerResponse, error) {
-	customer, err := uc.customerRepo.GetByID(id)
+	customer, err := uc.customerGateway.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +90,7 @@ func (uc *customerUseCase) GetCustomerByID(id uint64) (*dto.CustomerResponse, er
 }
 
 func (uc *customerUseCase) UpdateCustomer(id uint64, request *dto.UpdateCustomerRequest) (*dto.CustomerResponse, error) {
-	customer, err := uc.customerRepo.GetByID(id)
+	customer, err := uc.customerGateway.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +105,7 @@ func (uc *customerUseCase) UpdateCustomer(id uint64, request *dto.UpdateCustomer
 		return nil, errors.New("invalid customer data")
 	}
 
-	err = uc.customerRepo.Update(customer)
+	err = uc.customerGateway.Update(customer)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +122,7 @@ func (uc *customerUseCase) UpdateCustomer(id uint64, request *dto.UpdateCustomer
 }
 
 func (uc *customerUseCase) DeleteCustomer(id uint64) error {
-	customer, err := uc.customerRepo.GetByID(id)
+	customer, err := uc.customerGateway.GetByID(id)
 	if err != nil {
 		return err
 	}
@@ -138,5 +131,5 @@ func (uc *customerUseCase) DeleteCustomer(id uint64) error {
 		return errors.New("customer not found")
 	}
 
-	return uc.customerRepo.Delete(id)
+	return uc.customerGateway.Delete(id)
 }

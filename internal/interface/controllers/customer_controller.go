@@ -6,17 +6,17 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/dto"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/usecases"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/input"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/interface/presenters"
 )
 
 type CustomerController struct {
-	customerUseCase usecases.CustomerUseCase
+	customerUseCase input.CustomerUseCase
 	presenter       presenters.CustomerPresenter
 }
 
 func NewCustomerController(
-	customerUseCase usecases.CustomerUseCase,
+	customerUseCase input.CustomerUseCase,
 	presenter presenters.CustomerPresenter,
 ) *CustomerController {
 	return &CustomerController{
