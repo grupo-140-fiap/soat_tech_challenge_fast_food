@@ -4,10 +4,14 @@ import (
 	"database/sql"
 
 	"github.com/gin-gonic/gin"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/docs"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/application/usecases"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/infrastructure/persistance/gateways"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/interface/controllers"
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/interface/presenters"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type RouterConfig struct {
@@ -66,6 +70,9 @@ func SetupRoutes(config RouterConfig) {
 			orders.DELETE("/:id", orderController.DeleteOrder)
 		}
 	}
+
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	config.Engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	config.Engine.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
