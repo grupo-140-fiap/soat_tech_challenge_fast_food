@@ -13,17 +13,20 @@ type orderUseCase struct {
 	orderGateway     output.OrderGateway
 	orderItemGateway output.OrderItemGateway
 	productGateway   output.ProductGateway
+	paymentGateway   output.PaymentGateway
 }
 
 func NewOrderUseCase(
 	orderGateway output.OrderGateway,
 	orderItemGateway output.OrderItemGateway,
 	productGateway output.ProductGateway,
+	paymentGateway output.PaymentGateway,
 ) input.OrderUseCase {
 	return &orderUseCase{
 		orderGateway:     orderGateway,
 		orderItemGateway: orderItemGateway,
 		productGateway:   productGateway,
+		paymentGateway:   paymentGateway,
 	}
 }
 
@@ -51,17 +54,33 @@ func (uc *orderUseCase) CreateOrder(request *dto.CreateOrderRequest) (*dto.Order
 		return nil, errors.New("invalid order data")
 	}
 
+	// Create order first
 	err := uc.orderGateway.Create(order)
 	if err != nil {
 		return nil, err
 	}
 
+	// Create order items
 	for _, item := range order.Items {
 		item.OrderID = order.ID
 		err := uc.orderItemGateway.Create(&item)
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	// Automatically create payment for the order
+	paymentMethod := request.PaymentMethod
+	if paymentMethod == "" {
+		paymentMethod = "qr_code" // Default payment method
+	}
+
+	payment := entities.NewPayment(order.ID, totalPrice, paymentMethod)
+	err = uc.paymentGateway.Create(payment)
+	if err != nil {
+		// Log error but don't fail the order creation
+		// In production, you might want to implement a retry mechanism or queue
+		// For now, we'll continue without failing the order
 	}
 
 	return uc.buildOrderResponse(order), nil

@@ -24,18 +24,22 @@ func SetupRoutes(config RouterConfig) {
 	productGateway := gateways.NewProductGateway(config.DB)
 	orderGateway := gateways.NewOrderGateway(config.DB)
 	orderItemGateway := gateways.NewOrderItemGateway(config.DB)
+	paymentGateway := gateways.NewPaymentGateway(config.DB)
 
 	customerUseCase := usecases.NewCustomerUseCase(customerGateway)
 	productUseCase := usecases.NewProductUseCase(productGateway)
-	orderUseCase := usecases.NewOrderUseCase(orderGateway, orderItemGateway, productGateway)
+	orderUseCase := usecases.NewOrderUseCase(orderGateway, orderItemGateway, productGateway, paymentGateway)
+	paymentUseCase := usecases.NewPaymentUseCase(paymentGateway, orderGateway)
 
 	customerPresenter := presenters.NewCustomerPresenter()
 	productPresenter := presenters.NewProductPresenter()
 	orderPresenter := presenters.NewOrderPresenter()
+	paymentPresenter := presenters.NewPaymentPresenter()
 
 	customerController := controllers.NewCustomerController(customerUseCase, customerPresenter)
 	productController := controllers.NewProductController(productUseCase, productPresenter)
 	orderController := controllers.NewOrderController(orderUseCase, orderPresenter)
+	paymentController := controllers.NewPaymentController(paymentUseCase, paymentPresenter)
 
 	api := config.Engine.Group("/api/v1")
 	{
@@ -68,6 +72,13 @@ func SetupRoutes(config RouterConfig) {
 			orders.GET("/:id", orderController.GetOrderByID)
 			orders.PUT("/:id/status", orderController.UpdateOrderStatus)
 			orders.DELETE("/:id", orderController.DeleteOrder)
+		}
+
+		payments := api.Group("/payments")
+		{
+			payments.POST("", paymentController.CreatePayment)
+			payments.GET("/status/:order_id", paymentController.GetPaymentStatus)
+			payments.POST("/webhook", paymentController.PaymentWebhook)
 		}
 	}
 
