@@ -6,14 +6,14 @@ import (
 	"time"
 
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/repositories"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output"
 )
 
 type productGateway struct {
 	db *sql.DB
 }
 
-func NewProductGateway(db *sql.DB) repositories.ProductRepository {
+func NewProductGateway(db *sql.DB) output.ProductGateway {
 	return &productGateway{
 		db: db,
 	}

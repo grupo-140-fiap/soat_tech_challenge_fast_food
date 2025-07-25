@@ -5,14 +5,14 @@ import (
 	"time"
 
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/repositories"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output"
 )
 
 type orderGateway struct {
 	db *sql.DB
 }
 
-func NewOrderGateway(db *sql.DB) repositories.OrderRepository {
+func NewOrderGateway(db *sql.DB) output.OrderGateway {
 	return &orderGateway{
 		db: db,
 	}
@@ -301,7 +301,7 @@ type orderItemGateway struct {
 	db *sql.DB
 }
 
-func NewOrderItemGateway(db *sql.DB) repositories.OrderItemRepository {
+func NewOrderItemGateway(db *sql.DB) output.OrderItemGateway {
 	return &orderItemGateway{
 		db: db,
 	}

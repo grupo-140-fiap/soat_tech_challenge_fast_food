@@ -5,14 +5,14 @@ import (
 	"time"
 
 	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/entities"
-	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/repositories"
+	"github.com/samuellalvs/soat_tech_challenge_fast_food/internal/domain/ports/output"
 )
 
 type customerGateway struct {
 	db *sql.DB
 }
 
-func NewCustomerGateway(db *sql.DB) repositories.CustomerRepository {
+func NewCustomerGateway(db *sql.DB) output.CustomerGateway {
 	return &customerGateway{
 		db: db,
 	}
