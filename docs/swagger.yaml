@@ -31,8 +31,25 @@ definitions:
         items:
           $ref: '#/definitions/dto.OrderItemRequest'
         type: array
+      payment_method:
+        description: 'Optional: qr_code, credit_card, debit_card'
+        example: qr_code
+        type: string
     required:
     - items
+    type: object
+  dto.CreatePaymentRequest:
+    properties:
+      amount:
+        type: number
+      order_id:
+        type: integer
+      payment_method:
+        type: string
+    required:
+    - amount
+    - order_id
+    - payment_method
     type: object
   dto.CreateProductRequest:
     properties:
@@ -88,7 +105,14 @@ definitions:
   dto.UpdateOrderStatusRequest:
     properties:
       status:
-        example: in_progress
+        enum:
+        - awaiting_payment
+        - received
+        - in_progress
+        - ready
+        - completed
+        - cancelled
+        example: received
         type: string
     required:
     - status
@@ -115,6 +139,26 @@ definitions:
     - description
     - name
     - price
+    type: object
+  dto.WebhookPaymentRequest:
+    properties:
+      amount:
+        type: number
+      order_id:
+        type: integer
+      payment_method:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+      transaction_id:
+        type: string
+    required:
+    - amount
+    - order_id
+    - status
+    - transaction_id
     type: object
 info:
   contact: {}
@@ -490,7 +534,8 @@ paths:
   /orders/kitchen:
     get:
       description: Get orders for kitchen with priority ordering (Ready > In Progress
-        > Received) and oldest first. Completed orders are excluded.
+        > Received) and oldest first. Orders awaiting payment and completed orders
+        are excluded.
       produces:
       - application/json
       responses:
@@ -507,6 +552,138 @@ paths:
       summary: Get orders for kitchen
       tags:
       - orders
+  /payments:
+    post:
+      consumes:
+      - application/json
+      description: Create a new payment for an order
+      parameters:
+      - description: payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create new payment
+      tags:
+      - payments
+  /payments/status/{order_id}:
+    get:
+      description: Get the current payment status for an order
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get payment status by order ID
+      tags:
+      - payments
+  /payments/transaction/{transaction_id}:
+    get:
+      description: Get payment details by transaction ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: transaction_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get payment by transaction ID
+      tags:
+      - payments
+  /payments/webhook:
+    post:
+      consumes:
+      - application/json
+      description: Webhook endpoint to receive payment status updates from payment
+        provider
+      parameters:
+      - description: webhook payload
+        in: body
+        name: webhook
+        required: true
+        schema:
+          $ref: '#/definitions/dto.WebhookPaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Payment webhook endpoint
+      tags:
+      - payments
   /products:
     get:
       description: Get all products
