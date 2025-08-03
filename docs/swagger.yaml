@@ -1,5 +1,6 @@
+basePath: /api/v1
 definitions:
-  dto.CreateCustomerRequest:
+  dto.CreateCustomerDTO:
     properties:
       cpf:
         example: 123.456.789-00
@@ -13,13 +14,8 @@ definitions:
       last_name:
         example: Silva
         type: string
-    required:
-    - cpf
-    - email
-    - first_name
-    - last_name
     type: object
-  dto.CreateOrderRequest:
+  dto.OrderDTO:
     properties:
       cpf:
         example: 123.456.789-00
@@ -27,105 +23,155 @@ definitions:
       customer_id:
         example: 123
         type: integer
+      id:
+        example: 1
+        type: integer
       items:
         items:
-          $ref: '#/definitions/dto.OrderItemRequest'
+          $ref: '#/definitions/dto.OrderItemDTO'
         type: array
-      payment_method:
-        description: 'Optional: qr_code, credit_card, debit_card'
-        example: qr_code
+      status:
+        example: pending
         type: string
-    required:
-    - items
     type: object
-  dto.CreatePaymentRequest:
+  dto.OrderItemDTO:
     properties:
-      amount:
-        type: number
-      order_id:
+      id:
+        example: 1
         type: integer
-      payment_method:
-        type: string
-    required:
-    - amount
-    - order_id
-    - payment_method
-    type: object
-  dto.CreateProductRequest:
-    properties:
-      category:
-        example: snack
-        type: string
-      description:
-        example: Delicious cheeseburger with cheddar and pickles
-        type: string
-      image_url:
-        example: https://example.com/images/cheeseburger.png
-        type: string
-      name:
-        example: Cheeseburger
-        type: string
+      order_id:
+        example: 100
+        type: integer
       price:
-        example: 12.99
+        example: 19.99
         type: number
-    required:
-    - category
-    - description
-    - name
-    - price
-    type: object
-  dto.OrderItemRequest:
-    properties:
       product_id:
         example: 200
         type: integer
       quantity:
         example: 2
         type: integer
-    required:
-    - product_id
-    - quantity
     type: object
-  dto.UpdateCustomerRequest:
+  dto.PaymentDTO:
     properties:
+      QrcodeUrl:
+        type: string
+      amount:
+        type: string
+      cpf:
+        type: string
+      email:
+        type: string
+    type: object
+  dto.ProductDTO:
+    properties:
+      category:
+        example: Lanche
+        type: string
+      description:
+        example: Delicioso cheeseburger com queijo cheddar e molho especial
+        type: string
+      id:
+        example: 1
+        type: integer
+      image:
+        example: https://example.com/images/cheeseburger.png
+        type: string
+      name:
+        example: Cheeseburger
+        type: string
+      price:
+        example: "19.90"
+        type: string
+    type: object
+  entities.Customer:
+    properties:
+      cpf:
+        example: 123.456.789-00
+        type: string
+      created_at:
+        example: "2024-06-01T12:00:00Z"
+        type: string
       email:
         example: joao.silva@email.com
         type: string
       first_name:
         example: João
         type: string
+      id:
+        example: 1
+        type: integer
       last_name:
         example: Silva
         type: string
-    required:
-    - email
-    - first_name
-    - last_name
-    type: object
-  dto.UpdateOrderStatusRequest:
-    properties:
-      status:
-        enum:
-        - awaiting_payment
-        - received
-        - in_progress
-        - ready
-        - completed
-        - cancelled
-        example: received
+      updated_at:
+        example: "2024-06-02T15:30:00Z"
         type: string
-    required:
-    - status
     type: object
-  dto.UpdateProductRequest:
+  entities.Order:
+    properties:
+      cpf:
+        example: 123.456.789-00
+        type: string
+      created_at:
+        example: "2024-06-01T12:00:00Z"
+        type: string
+      customer_id:
+        example: 123
+        type: integer
+      id:
+        example: 1
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/entities.OrderItem'
+        type: array
+      status:
+        example: pending
+        type: string
+      updated_at:
+        example: "2024-06-01T12:30:00Z"
+        type: string
+    type: object
+  entities.OrderItem:
+    properties:
+      created_at:
+        example: "2024-06-01T12:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      order_id:
+        example: 100
+        type: integer
+      price:
+        example: 19.99
+        type: number
+      product_id:
+        example: 200
+        type: integer
+      quantity:
+        example: 2
+        type: integer
+      updated_at:
+        example: "2024-06-01T12:30:00Z"
+        type: string
+    type: object
+  entities.Product:
     properties:
       category:
-        example: snack
+        example: Sandwich
+        type: string
+      created_at:
+        example: "2024-06-01T12:00:00Z"
         type: string
       description:
         example: Delicious cheeseburger with cheddar and pickles
         type: string
-      image_url:
+      id:
+        example: 1
+        type: integer
+      image:
         example: https://example.com/images/cheeseburger.png
         type: string
       name:
@@ -134,35 +180,43 @@ definitions:
       price:
         example: 12.99
         type: number
-    required:
-    - category
-    - description
-    - name
-    - price
-    type: object
-  dto.WebhookPaymentRequest:
-    properties:
-      amount:
-        type: number
-      order_id:
-        type: integer
-      payment_method:
+      updated_at:
+        example: "2024-06-01T12:00:00Z"
         type: string
+    type: object
+  handlers.RequestBody:
+    properties:
       status:
         type: string
-      timestamp:
-        type: string
-      transaction_id:
-        type: string
-    required:
-    - amount
-    - order_id
-    - status
-    - transaction_id
     type: object
+host: localhost:8080
 info:
   contact: {}
+  description: API para gerenciamento de pedidos e produtos de lanchonete do SOAT
+    Tech Challenge.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: SOAT Tech Challenge Fast Food API
+  version: "1.0"
 paths:
+  /admin/orders/active:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all active orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Order'
+            type: array
+      summary: Get active orders
+      tags:
+      - admin
   /customers:
     post:
       consumes:
@@ -174,31 +228,18 @@ paths:
         name: customer
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateCustomerRequest'
+          $ref: '#/definitions/dto.CreateCustomerDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
       summary: Create new customer
       tags:
       - customers
   /customers/{cpf}:
     get:
-      description: Get customer by CPF
+      description: Retrieves a customer by their CPF (Cadastro de Pessoas Físicas).
       parameters:
       - description: Customer CPF
         in: path
@@ -211,227 +252,61 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/entities.Customer'
       summary: Get customer by CPF
       tags:
       - customers
-  /customers/{id}:
-    delete:
-      description: Delete customer by ID
-      parameters:
-      - description: Customer ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Delete customer
-      tags:
-      - customers
-    put:
-      consumes:
-      - application/json
-      description: Update customer information
-      parameters:
-      - description: Customer ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: customer
-        in: body
-        name: customer
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UpdateCustomerRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Update customer
-      tags:
-      - customers
-  /customers/id/{id}:
-    get:
-      description: Get customer by ID
-      parameters:
-      - description: Customer ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get customer by ID
-      tags:
-      - customers
   /orders:
-    get:
-      description: Get all orders in the system
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get all orders
-      tags:
-      - orders
     post:
       consumes:
       - application/json
-      description: Create new order with items
+      description: Creates a new order using the provided JSON payload
       parameters:
-      - description: order
+      - description: Order data
         in: body
         name: order
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateOrderRequest'
+          $ref: '#/definitions/dto.OrderDTO'
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: Order created successfully
           schema:
             additionalProperties: true
             type: object
         "400":
-          description: Bad Request
+          description: Invalid input
           schema:
             additionalProperties: true
             type: object
         "500":
-          description: Internal Server Error
+          description: Failed to create order
           schema:
             additionalProperties: true
             type: object
-      summary: Create new order
+      summary: Create a new order
       tags:
       - orders
   /orders/{id}:
-    delete:
-      description: Delete order by ID
-      parameters:
-      - description: Order ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Delete order
-      tags:
-      - orders
     get:
-      description: Get order by ID with items
+      description: Retrieves an order by its unique identifier
       parameters:
       - description: Order ID
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/entities.Order'
         "500":
-          description: Internal Server Error
+          description: Failed on find order
           schema:
             additionalProperties: true
             type: object
@@ -442,427 +317,163 @@ paths:
     put:
       consumes:
       - application/json
-      description: Update the status of an existing order
+      description: Updates the status of an existing order
       parameters:
       - description: Order ID
         in: path
         name: id
         required: true
-        type: integer
-      - description: status
+        type: string
+      - description: New status
         in: body
         name: status
         required: true
         schema:
-          $ref: '#/definitions/dto.UpdateOrderStatusRequest'
+          $ref: '#/definitions/handlers.RequestBody'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Order status updated successfully
           schema:
             additionalProperties: true
             type: object
         "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
+          description: Invalid input
           schema:
             additionalProperties: true
             type: object
         "500":
-          description: Internal Server Error
+          description: Failed on update order status
           schema:
             additionalProperties: true
             type: object
       summary: Update order status
       tags:
       - orders
-  /orders/cpf/{cpf}:
-    get:
-      description: Get all orders for a specific CPF
-      parameters:
-      - description: Customer CPF
-        in: path
-        name: cpf
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get orders by CPF
-      tags:
-      - orders
-  /orders/customer/{customerId}:
-    get:
-      description: Get all orders for a specific customer ID
-      parameters:
-      - description: Customer ID
-        in: path
-        name: customerId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get orders by customer ID
-      tags:
-      - orders
-  /orders/kitchen:
-    get:
-      description: Get orders for kitchen with priority ordering (Ready > In Progress
-        > Received) and oldest first. Orders awaiting payment and completed orders
-        are excluded.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get orders for kitchen
-      tags:
-      - orders
   /payments:
     post:
       consumes:
       - application/json
-      description: Create a new payment for an order
+      description: Create a new payment using MercadoPago integration
       parameters:
-      - description: payment
+      - description: Payment data
         in: body
         name: payment
         required: true
         schema:
-          $ref: '#/definitions/dto.CreatePaymentRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Create new payment
-      tags:
-      - payments
-  /payments/status/{order_id}:
-    get:
-      description: Get the current payment status for an order
-      parameters:
-      - description: Order ID
-        in: path
-        name: order_id
-        required: true
-        type: integer
+          $ref: '#/definitions/dto.PaymentDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
+            properties:
+              Qrcode:
+                type: string
+              message:
+                type: string
             type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get payment status by order ID
+      summary: Create a new payment
       tags:
-      - payments
-  /payments/transaction/{transaction_id}:
-    get:
-      description: Get payment details by transaction ID
-      parameters:
-      - description: Transaction ID
-        in: path
-        name: transaction_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get payment by transaction ID
-      tags:
-      - payments
-  /payments/webhook:
-    post:
-      consumes:
-      - application/json
-      description: Webhook endpoint to receive payment status updates from payment
-        provider
-      parameters:
-      - description: webhook payload
-        in: body
-        name: webhook
-        required: true
-        schema:
-          $ref: '#/definitions/dto.WebhookPaymentRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Payment webhook endpoint
-      tags:
-      - payments
+      - payment
   /products:
-    get:
-      description: Get all products
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get all products
-      tags:
-      - products
     post:
       consumes:
       - application/json
-      description: Create new product
+      description: Creates a new product using the provided JSON payload
       parameters:
-      - description: product
+      - description: Product data
         in: body
         name: product
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateProductRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Create new product
-      tags:
-      - products
-  /products/{id}:
-    delete:
-      description: Delete product by ID
-      parameters:
-      - description: Product ID
-        in: path
-        name: id
-        required: true
-        type: integer
+          $ref: '#/definitions/dto.ProductDTO'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Product created successfully
           schema:
             additionalProperties: true
             type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Delete product
-      tags:
-      - products
-    get:
-      description: Get product by ID
-      parameters:
-      - description: Product ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get product by ID
+      summary: Create a new product
       tags:
       - products
     put:
       consumes:
       - application/json
-      description: Update product information
+      description: Updates the details of an existing product based on the provided
+        JSON payload.
+      parameters:
+      - description: Product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update an existing product
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      description: Deletes a product from the database using its unique identifier.
       parameters:
       - description: Product ID
         in: path
         name: id
         required: true
-        type: integer
-      - description: product
-        in: body
-        name: product
+        type: string
+      responses:
+        "200":
+          description: Product deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete a product by ID
+      tags:
+      - products
+    get:
+      description: Retrieves a product by its unique identifier.
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/dto.UpdateProductRequest'
-      produces:
-      - application/json
+        type: string
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Update product
+            $ref: '#/definitions/dto.ProductDTO'
+      summary: Get product by ID
       tags:
       - products
   /products/category/{category}:
     get:
-      description: Get products by category (snack, drink, dessert, side)
+      description: Retrieves a list of products filtered by the specified category.
       parameters:
       - description: Product Category
         in: path
         name: category
         required: true
         type: string
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
+            items:
+              $ref: '#/definitions/entities.Product'
+            type: array
       summary: Get products by category
       tags:
       - products
