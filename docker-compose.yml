@@ -10,7 +10,7 @@ services:
       - DB_PASSWORD=app_password
       - DB_NAME=soat_fast_food
       - API_ENV=development
-      - ACCESSTOKEN=APP_USR-1234567890-0987654321-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+      - ACCESSTOKEN=APP_USR-1789041333533573-052409-76d76765e02a3ab6b030ce2f6e3674bc-2454576917
     depends_on:
       soat-fast-food-db:
         condition: service_healthy
