@@ -463,13 +463,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "cpf": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123.456.789-00"
                 },
                 "customer_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 123
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "items": {
                     "type": "array",
@@ -478,7 +481,8 @@ const docTemplate = `{
                     }
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "pending"
                 }
             }
         },
@@ -486,19 +490,24 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "order_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
                 "price": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 19.99
                 },
                 "product_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 200
                 },
                 "quantity": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 2
                 }
             }
         },

@@ -1,36 +1,65 @@
 # Tech Challenge - Sistema de Autoatendimento para Lanchonete
 
-Este projeto é parte do **Tech Challenge - Fase 01**, e tem como objetivo desenvolver um sistema de controle de pedidos para uma lanchonete.
+Este projeto é parte do **Tech Challenge - Fase 02**, implementando um sistema completo de controle de pedidos para lanchonete com arquitetura Clean Code, Clean Architecture e infraestrutura Kubernetes.
 
 ## 📋 Índice
 
 - [Visão Geral](#-visão-geral)
+- [Arquitetura do Sistema](#-arquitetura-do-sistema)
 - [Tecnologias](#-tecnologias)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
+- [APIs da Fase 2](#-apis-da-fase-2)
+- [Infraestrutura Kubernetes](#-infraestrutura-kubernetes)
 - [Configuração](#️-configuração)
 - [Execução](#-execução)
 - [Documentação da API](#-documentação-da-api)
 - [Testes](#-testes)
+- [Guia de Execução Completo](#-guia-de-execução-completo)
+- [Vídeo Demonstrativo](#-vídeo-demonstrativo)
 - [Documentação DDD](#-documentação-do-sistema-ddd-com-event-storming)
 
 ## 🎯 Visão Geral
 
-Este projeto implementa um sistema completo de autoatendimento para lanchonetes que inclui:
+Este projeto implementa um sistema completo de autoatendimento para lanchonetes seguindo os padrões **Clean Code** e **Clean Architecture**, com infraestrutura **Kubernetes** para alta disponibilidade e escalabilidade.
 
+### Funcionalidades Principais:
 - **Gestão de Clientes**: Cadastro e consulta de clientes por CPF
 - **Catálogo de Produtos**: CRUD completo com categorização (lanches, acompanhamentos, bebidas, sobremesas)
 - **Sistema de Pedidos**: Criação, acompanhamento e atualização de status dos pedidos
-- **Integração de Pagamento**: Integração com MercadoPago para processamento de pagamentos
-- **Painel Administrativo**: Monitoramento de pedidos em andamento
+- **Integração de Pagamento**: Integração com MercadoPago para processamento de pagamentos via QR Code
+- **Webhook de Pagamentos**: Recebimento automático de confirmações de pagamento
+- **Painel Administrativo**: Monitoramento de pedidos em andamento com ordenação específica
+
+### Fluxo de Negócio:
+1. **Recebimento**: Cliente faz pedido → Sistema gera checkout
+2. **Pagamento**: QR Code MercadoPago → Confirmação via webhook  
+3. **Produção**: Pedido segue fluxo: `Recebido` → `Em Preparação` → `Pronto` → `Finalizado`
+4. **Ordenação**: Lista prioriza `Pronto` > `Em Preparação` > `Recebido` + mais antigos primeiro
 
 ## 🛠 Tecnologias
 
-- **Go** - Linguagem de programação
-- **Gin** - Framework web
-- **MySQL 8.0** - Banco de dados
-- **Docker** - Containerização
-- **Swagger** - Documentação da API
+### Backend
+- **Go 1.23+** - Linguagem de programação
+- **Gin** - Framework web HTTP
+- **MySQL 8.0** - Banco de dados relacional
 - **MercadoPago SDK** - Processamento de pagamentos
+
+### DevOps & Infraestrutura
+- **Docker** - Containerização da aplicação
+- **Kubernetes** - Orquestração de containers
+- **Helm** - Gerenciador de pacotes Kubernetes
+- **HPA** - Auto-scaling horizontal de pods
+- **ConfigMaps & Secrets** - Gerenciamento de configurações
+
+### Documentação & Testes
+- **Swagger** - Documentação interativa da API
+- **Go Testing** - Testes unitários
+- **Postman Collection** - Exemplos de requisições
+
+### Arquitetura
+- **Clean Architecture** - Separação de responsabilidades
+- **Hexagonal Architecture** - Ports and Adapters
+- **Domain-Driven Design** - Modelagem orientada ao domínio
 
 ## 📁 Estrutura do Projeto
 
@@ -61,10 +90,104 @@ O projeto segue a **arquitetura hexagonal** (ports and adapters) organizando o c
 │       ├── database/
 │       │   └── mysql/
 │       └── mercadopago/
+├── helm/                   # Helm Chart
+│   └── fast-food/
+│       ├── Chart.yaml
+│       ├── values.yaml
+│       ├── README.md
+│       └── templates/
+│           ├── deployment.yaml
+│           ├── service.yaml
+│           ├── mysql-deployment.yaml
+│           ├── mysql-service.yaml
+│           ├── configmap.yaml
+│           ├── secret.yaml
+│           ├── hpa.yaml
+│           ├── namespace.yaml
+│           ├── serviceaccount.yaml
 ├── docs/                   # Documentação Swagger
 │   ├── docs.go
 │   ├── swagger.json
 │   └── swagger.yaml
+├── Makefile                # Comandos de automação
+└── README.md               # Documentação completa
+```
+
+## 🏗️ Arquitetura do Sistema
+
+### Diagrama da Infraestrutura Kubernetes
+O sistema utiliza **Clean Architecture** com infraestrutura **Kubernetes** gerenciada por **Helm**:
+
+![Diagrama Kubernetes](docs/kubernetes.png)
+
+![Fluxos de Comunicação](docs/fluxosdecomunicacao.png)
+
+### Como a Aplicação se Comunica com o Banco?
+1. **Pods da Aplicação** fazem conexões TCP na porta 3306
+2. **MySQL Service** (`fast-food-api-mysql`) roteia para o **MySQL Pod**
+3. **Configurações** injetadas via **ConfigMap** (host, porta, database) e **Secret** (senha)
+4. **Dados persistidos** no **PVC** (10Gi) para sobreviver a restarts
+
+### Como os Componentes Kubernetes se Comunicam?
+1. **LoadBalancer** recebe tráfego externo e distribui para os pods
+2. **ClusterIP Services** permitem comunicação interna entre pods
+3. **HPA** monitora métricas e escala pods automaticamente
+4. **ConfigMaps/Secrets** injetam configurações nos pods via variáveis de ambiente
+5. **DNS interno** do cluster resolve nomes de services automaticamente
+
+### Requisitos da Fase 2 Atendidos:
+- ✅ **Kubernetes**: Deployment e Service implementados
+- ✅ **Helm**: Gerenciamento de pacotes e versionamento
+- ✅ **Escalabilidade (HPA)**: Auto-scaling de 2-10 pods
+- ✅ **Segurança**: ConfigMaps e Secrets para dados sensíveis
+- ✅ **Alta Disponibilidade**: Múltiplos pods e persistência
+
+## 🔗 APIs da Fase 2 - Requisitos Obrigatórios
+
+### 1. **Checkout Pedido** - `POST /api/v1/checkout`
+- Recebe produtos solicitados e retorna identificação do pedido + QR Code
+
+### 2. **Consultar Status** - `GET /api/v1/orders/{id}`  
+- Informa se o pagamento foi aprovado ou não
+
+### 3. **Webhook Pagamento** - `POST /api/v1/webhook/payment`
+- Recebe confirmação de pagamento (aprovado/recusado) do MercadoPago
+
+### 4. **Lista Ordenada** - `GET /api/v1/admin/orders/active`
+- Retorna pedidos ordenados: **Pronto** > **Em Preparação** > **Recebido**
+- Mais antigos primeiro, sem pedidos "Finalizado"
+
+### 5. **Atualizar Status** - `PATCH /api/v1/orders/{id}/status`
+- Atualiza status do pedido para controle da cozinha
+
+### 📚 Documentação Completa
+- **Swagger**: `http://localhost:8080/swagger/index.html`
+- **Collection Postman**: Disponível na pasta `docs/`
+
+## ☸️ Deploy e Execução
+
+### Deploy com Helm (Produção):
+```bash
+# Deploy completo com Helm
+make helm-deploy
+
+# Verificar status  
+make helm-status
+
+# Acessar aplicação
+make helm-port-forward
+
+# Upgrade do release
+make helm-upgrade
+```
+
+### Desenvolvimento Local:
+```bash
+# Execução rápida com Docker
+make docker-run
+
+# Acessar aplicação
+curl http://localhost:8080/health
 ```
 
 ## ⚙️ Configuração
@@ -180,8 +303,79 @@ curl -X POST http://localhost:8080/api/v1/orders \
 ### Executar Testes
 
 ```bash
+# Com Make
+make test
+
+# Direto com Docker
 docker run --rm -v $(pwd):/app -w /app golang:1.24-alpine go test ./...
+
+# Testes com coverage
+go test ./... -v -cover
 ```
+
+## 📖 Guia de Execução
+
+### 🚀 Início Rápido
+
+#### Preparação:
+```bash
+git clone https://github.com/samuellalvs/soat_tech_challenge_fast_food.git
+cd soat_tech_challenge_fast_food
+```
+
+#### Opção 1 - Docker (Desenvolvimento):
+```bash
+make docker-run
+curl http://localhost:8080/health  # Verificar saúde
+```
+
+#### Opção 2 - Kubernetes (Produção):
+```bash
+make helm-deploy                   # Deploy completo
+make helm-port-forward            # Acesso local
+```
+
+### 🧪 Testando as APIs da Fase 2
+
+```bash
+# 1. Checkout de pedido
+curl -X POST http://localhost:8080/api/v1/checkout \
+  -H "Content-Type: application/json" \
+  -d '{"order_id":1,"amount":35.40,"email":"cliente@email.com"}'
+
+# 2. Consultar status
+curl http://localhost:8080/api/v1/orders/1
+
+# 3. Webhook de pagamento
+curl -X POST http://localhost:8080/api/v1/webhook/payment \
+  -H "Content-Type: application/json" \
+  -d '{"payment_id":"123456","status":"approved","order_id":"1"}'
+
+# 4. Pedidos ordenados (admin)
+curl http://localhost:8080/api/v1/admin/orders/active
+
+# 5. Atualizar status
+curl -X PATCH http://localhost:8080/api/v1/orders/1/status \
+  -H "Content-Type: application/json" \
+  -d '{"status":"preparation"}'
+```
+
+### 🔗 URLs de Acesso
+- **API**: http://localhost:8080
+- **Swagger**: http://localhost:8080/swagger/index.html
+- **Health**: http://localhost:8080/health
+
+## 🎥 Vídeo Demonstrativo
+
+📹 **[Link do Vídeo]()**
+
+O vídeo demonstra:
+- ✅ Arquitetura Kubernetes funcionando
+- ✅ Deploy da aplicação
+- ✅ Funcionamento de todos os endpoints
+- ✅ HPA em ação com escalabilidade
+- ✅ Fluxo completo do negócio
+- ✅ Integração com MercadoPago
 
 ## 📚 Documentação do sistema (DDD) com Event Storming
 

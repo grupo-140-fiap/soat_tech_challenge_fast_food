@@ -18,29 +18,38 @@ definitions:
   dto.OrderDTO:
     properties:
       cpf:
+        example: 123.456.789-00
         type: string
       customer_id:
+        example: 123
         type: integer
       id:
+        example: 1
         type: integer
       items:
         items:
           $ref: '#/definitions/dto.OrderItemDTO'
         type: array
       status:
+        example: pending
         type: string
     type: object
   dto.OrderItemDTO:
     properties:
       id:
+        example: 1
         type: integer
       order_id:
+        example: 100
         type: integer
       price:
+        example: 19.99
         type: number
       product_id:
+        example: 200
         type: integer
       quantity:
+        example: 2
         type: integer
     type: object
   dto.PaymentDTO:
