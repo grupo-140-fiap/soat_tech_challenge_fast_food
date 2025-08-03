@@ -1,6 +1,6 @@
 USE soat_fast_food;
 
-CREATE TABLE customers (
+CREATE TABLE IF NOT EXISTS customers (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     first_name  VARCHAR(100),
     last_name   VARCHAR(100),
@@ -10,16 +10,16 @@ CREATE TABLE customers (
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     customer_id BIGINT UNSIGNED NULL REFERENCES customers(id),
     cpf         VARCHAR(14) NULL,
-    status      ENUM('received', 'preparation', 'ready', 'completed'),
+    status      ENUM('awaiting_payment', 'received', 'in_progress', 'ready', 'completed', 'cancelled'),
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     description TEXT,
@@ -30,7 +30,7 @@ CREATE TABLE products (
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE order_items (
+CREATE TABLE IF NOT EXISTS order_items (
     id           BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     order_id     BIGINT UNSIGNED NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
     product_id   BIGINT UNSIGNED NOT NULL REFERENCES products(id),
@@ -38,4 +38,15 @@ CREATE TABLE order_items (
     price        FLOAT NOT NULL,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS payments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT UNSIGNED NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    amount DECIMAL(10,2) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    payment_method VARCHAR(50) NOT NULL,
+    transaction_id VARCHAR(255) DEFAULT '',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
