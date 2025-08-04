@@ -84,7 +84,7 @@ O projeto segue o **Clean Architecture** organizando o código em camadas bem de
 │   │   │   ├── presenters/     # Configuração dos presenters
 │   │   │   └── routers/        # Configuração de rotas 
 │   └── infrastructure/     # Configurações e conexões externas
-│       ├── persistance/    # Implementação dos repositórios
+│       ├── persistance/    # Implementação dos repositórios e persistencia de dados
 │       │   └── gateways/
 ├── helm/                   # Helm Chart
 │   └── fast-food/
