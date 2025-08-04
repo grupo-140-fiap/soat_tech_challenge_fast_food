@@ -31,7 +31,7 @@ docker-stop: ## Para containers Docker Compose
 	@echo "🛑 Parando containers..."
 	docker compose down
 
-helm-deploy: docker-build ## Deploy com Helm
+helm-deploy: ## Deploy com Helm
 	@echo "🚀 Fazendo deploy com Helm..."
 	helm upgrade --install $(APP_NAME) ./helm/fast-food --create-namespace
 	@echo "⏳ Aguardando pods ficarem prontos..."
