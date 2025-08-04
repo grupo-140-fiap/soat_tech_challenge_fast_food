@@ -63,7 +63,7 @@ Este projeto implementa um sistema completo de autoatendimento para lanchonetes 
 
 ## 📁 Estrutura do Projeto
 
-O projeto segue a **arquitetura hexagonal** (ports and adapters) organizando o código em camadas bem definidas:
+O projeto segue o **Clean Architecture** organizando o código em camadas bem definidas:
 
 ```
 ├── cmd/
@@ -76,20 +76,16 @@ O projeto segue a **arquitetura hexagonal** (ports and adapters) organizando o c
 │   │       ├── input/       # Portas de entrada (services)
 │   │       │   └── services/
 │   │       └── output/      # Portas de saída (repositories)
-│   │           └── repositories/
 │   ├── application/         # Casos de uso e serviços
-│   │   ├── services/        # Implementação dos serviços
+│   │   ├── usecases/        # Implementação dos casos de uso
 │   │   └── dto/             # Data Transfer Objects
-│   ├── adapters/           # Adaptadores (HTTP, Repository)
-│   │   ├── http/
-│   │   │   ├── handlers/    # Controllers HTTP
-│   │   │   └── router/      # Configuração de rotas
-│   │   └── repositories/
-│   │       └── persistence/ # Implementação dos repositórios
+│   ├── interface/           # Interfaces
+│   │   │   ├── controllers/    # Controllers HTTP 
+│   │   │   ├── presenters/     # Configuração dos presenters
+│   │   │   └── routers/        # Configuração de rotas 
 │   └── infrastructure/     # Configurações e conexões externas
-│       ├── database/
-│       │   └── mysql/
-│       └── mercadopago/
+│       ├── persistance/    # Implementação dos repositórios e persistencia de dados
+│       │   └── gateways/
 ├── helm/                   # Helm Chart
 │   └── fast-food/
 │       ├── Chart.yaml
@@ -144,16 +140,16 @@ O sistema utiliza **Clean Architecture** com infraestrutura **Kubernetes** geren
 
 ## 🔗 APIs da Fase 2 - Requisitos Obrigatórios
 
-### 1. **Checkout Pedido** - `POST /api/v1/checkout`
-- Recebe produtos solicitados e retorna identificação do pedido + QR Code
+### 1. **Checkout Pedido** - `POST /api/v1/orders`
+- Recebe produtos solicitados e retorna identificação do pedido
 
-### 2. **Consultar Status** - `GET /api/v1/orders/{id}`  
+### 2. **Consultar Status do pagamento** - `GET /api/v1/orders/{id}`  
 - Informa se o pagamento foi aprovado ou não
 
-### 3. **Webhook Pagamento** - `POST /api/v1/webhook/payment`
+### 3. **Webhook Pagamento** - `POST /api/v1/payments/webhook`
 - Recebe confirmação de pagamento (aprovado/recusado) do MercadoPago
 
-### 4. **Lista Ordenada** - `GET /api/v1/admin/orders/active`
+### 4. **Lista Ordenada** - `GET /api/v1/orders/kitchen`
 - Retorna pedidos ordenados: **Pronto** > **Em Preparação** > **Recebido**
 - Mais antigos primeiro, sem pedidos "Finalizado"
 
@@ -273,11 +269,8 @@ A documentação completa da API está disponível através do **Swagger**:
 - `GET /api/v1/orders/{id}` - Buscar pedido por ID
 - `PATCH /api/v1/orders/{id}/status` - Atualizar status do pedido
 
-#### 💳 Pagamentos
-- `POST /api/v1/checkout` - Processar pagamento
-
 #### 📊 Administração
-- `GET /api/v1/admin/orders/active` - Listar pedidos em andamento
+- `GET /api/v1/orders/kitchen` - Listar pedidos em andamento
 
 ### Exemplo de Uso
 
@@ -339,20 +332,38 @@ make helm-port-forward            # Acesso local
 
 ```bash
 # 1. Checkout de pedido
-curl -X POST http://localhost:8080/api/v1/checkout \
-  -H "Content-Type: application/json" \
-  -d '{"order_id":1,"amount":35.40,"email":"cliente@email.com"}'
+curl --request POST \
+  --url http://localhost:8080/api/v1/orders \
+  --data '{
+	"customer_id": null,
+	"cpf": null,
+	"items": [
+		{
+			"product_id":1,
+			"quantity":2
+		}
+	],
+	"payment_method": "qr_code"
+}'
 
 # 2. Consultar status
-curl http://localhost:8080/api/v1/orders/1
+curl --request GET \
+  --url http://localhost:8080/api/v1/payments/status/2
 
 # 3. Webhook de pagamento
-curl -X POST http://localhost:8080/api/v1/webhook/payment \
-  -H "Content-Type: application/json" \
-  -d '{"payment_id":"123456","status":"approved","order_id":"1"}'
+curl --request POST \
+  --url http://localhost:8080/api/v1/payments/webhook \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "order_id": 2,
+    "transaction_id": "TXN_DEMO_123456789",
+    "status": "approved",
+    "amount": 40.30,
+    "processed_at": "2025-01-15T10:03:00Z"
+}'
 
 # 4. Pedidos ordenados (admin)
-curl http://localhost:8080/api/v1/admin/orders/active
+curl http://localhost:8080/api/v1/orders/kitchen
 
 # 5. Atualizar status
 curl -X PATCH http://localhost:8080/api/v1/orders/1/status \
