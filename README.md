@@ -63,7 +63,7 @@ Este projeto implementa um sistema completo de autoatendimento para lanchonetes 
 
 ## 📁 Estrutura do Projeto
 
-O projeto segue a **arquitetura hexagonal** (ports and adapters) organizando o código em camadas bem definidas:
+O projeto segue o **Clean Architecture** organizando o código em camadas bem definidas:
 
 ```
 ├── cmd/
@@ -76,20 +76,16 @@ O projeto segue a **arquitetura hexagonal** (ports and adapters) organizando o c
 │   │       ├── input/       # Portas de entrada (services)
 │   │       │   └── services/
 │   │       └── output/      # Portas de saída (repositories)
-│   │           └── repositories/
 │   ├── application/         # Casos de uso e serviços
-│   │   ├── services/        # Implementação dos serviços
+│   │   ├── usecases/        # Implementação dos casos de uso
 │   │   └── dto/             # Data Transfer Objects
-│   ├── adapters/           # Adaptadores (HTTP, Repository)
-│   │   ├── http/
-│   │   │   ├── handlers/    # Controllers HTTP
-│   │   │   └── router/      # Configuração de rotas
-│   │   └── repositories/
-│   │       └── persistence/ # Implementação dos repositórios
+│   ├── interface/           # Interfaces
+│   │   │   ├── controllers/    # Controllers HTTP 
+│   │   │   ├── presenters/     # Configuração dos presenters
+│   │   │   └── routers/        # Configuração de rotas 
 │   └── infrastructure/     # Configurações e conexões externas
-│       ├── database/
-│       │   └── mysql/
-│       └── mercadopago/
+│       ├── persistance/    # Implementação dos repositórios
+│       │   └── gateways/
 ├── helm/                   # Helm Chart
 │   └── fast-food/
 │       ├── Chart.yaml
