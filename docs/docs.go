@@ -10,41 +10,11 @@ const docTemplate = `{
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
         "contact": {},
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/orders/active": {
-            "get": {
-                "description": "Retrieve all active orders",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "admin"
-                ],
-                "summary": "Get active orders",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entities.Order"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/customers": {
             "post": {
                 "description": "Create new customer",
@@ -65,20 +35,82 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateCustomerDTO"
+                            "$ref": "#/definitions/dto.CreateCustomerRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/id/{id}": {
+            "get": {
+                "description": "Get customer by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Get customer by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
                     }
                 }
             }
         },
         "/customers/{cpf}": {
             "get": {
-                "description": "Retrieves a customer by their CPF (Cadastro de Pessoas Físicas).",
+                "description": "Get customer by CPF",
                 "produces": [
                     "application/json"
                 ],
@@ -99,15 +131,161 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.Customer"
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}": {
+            "put": {
+                "description": "Update customer information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Update customer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "customer",
+                        "name": "customer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateCustomerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete customer by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Delete customer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
             }
         },
         "/orders": {
+            "get": {
+                "description": "Get all orders in the system",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get all orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
             "post": {
-                "description": "Creates a new order using the provided JSON payload",
+                "description": "Create new order with items",
                 "consumes": [
                     "application/json"
                 ],
@@ -117,35 +295,137 @@ const docTemplate = `{
                 "tags": [
                     "orders"
                 ],
-                "summary": "Create a new order",
+                "summary": "Create new order",
                 "parameters": [
                     {
-                        "description": "Order data",
+                        "description": "order",
                         "name": "order",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.OrderDTO"
+                            "$ref": "#/definitions/dto.CreateOrderRequest"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Order created successfully",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
                     "400": {
-                        "description": "Invalid input",
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
                     "500": {
-                        "description": "Failed to create order",
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/cpf/{cpf}": {
+            "get": {
+                "description": "Get all orders for a specific CPF",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get orders by CPF",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer CPF",
+                        "name": "cpf",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/customer/{customerId}": {
+            "get": {
+                "description": "Get all orders for a specific customer ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get orders by customer ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "customerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/kitchen": {
+            "get": {
+                "description": "Get orders for kitchen with priority ordering (Ready \u003e In Progress \u003e Received) and oldest first. Orders awaiting payment and completed orders are excluded.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get orders for kitchen",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -156,7 +436,7 @@ const docTemplate = `{
         },
         "/orders/{id}": {
             "get": {
-                "description": "Retrieves an order by its unique identifier",
+                "description": "Get order by ID with items",
                 "produces": [
                     "application/json"
                 ],
@@ -166,7 +446,7 @@ const docTemplate = `{
                 "summary": "Get order by ID",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Order ID",
                         "name": "id",
                         "in": "path",
@@ -177,11 +457,61 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.Order"
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "500": {
-                        "description": "Failed on find order",
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete order by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Delete order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -192,7 +522,7 @@ const docTemplate = `{
         },
         "/orders/{id}/status": {
             "put": {
-                "description": "Updates the status of an existing order",
+                "description": "Update the status of an existing order",
                 "consumes": [
                     "application/json"
                 ],
@@ -205,39 +535,46 @@ const docTemplate = `{
                 "summary": "Update order status",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Order ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "New status",
+                        "description": "status",
                         "name": "status",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.RequestBody"
+                            "$ref": "#/definitions/dto.UpdateOrderStatusRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Order status updated successfully",
+                        "description": "OK",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
                     "400": {
-                        "description": "Invalid input",
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
                     "500": {
-                        "description": "Failed on update order status",
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -248,7 +585,7 @@ const docTemplate = `{
         },
         "/payments": {
             "post": {
-                "description": "Create a new payment using MercadoPago integration",
+                "description": "Create a new payment for an order",
                 "consumes": [
                     "application/json"
                 ],
@@ -256,17 +593,161 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "payment"
+                    "payments"
                 ],
-                "summary": "Create a new payment",
+                "summary": "Create new payment",
                 "parameters": [
                     {
-                        "description": "Payment data",
+                        "description": "payment",
                         "name": "payment",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.PaymentDTO"
+                            "$ref": "#/definitions/dto.CreatePaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/payments/status/{order_id}": {
+            "get": {
+                "description": "Get the current payment status for an order",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Get payment status by order ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/payments/transaction/{transaction_id}": {
+            "get": {
+                "description": "Get payment details by transaction ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Get payment by transaction ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Transaction ID",
+                        "name": "transaction_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/payments/webhook": {
+            "post": {
+                "description": "Webhook endpoint to receive payment status updates from payment provider",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Payment webhook endpoint",
+                "parameters": [
+                    {
+                        "description": "webhook payload",
+                        "name": "webhook",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.WebhookPaymentRequest"
                         }
                     }
                 ],
@@ -275,46 +756,46 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "object",
-                            "properties": {
-                                "Qrcode": {
-                                    "type": "string"
-                                },
-                                "message": {
-                                    "type": "string"
-                                }
-                            }
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
             }
         },
         "/products": {
-            "put": {
-                "description": "Updates the details of an existing product based on the provided JSON payload.",
-                "consumes": [
-                    "application/json"
-                ],
+            "get": {
+                "description": "Get all products",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "products"
                 ],
-                "summary": "Update an existing product",
-                "parameters": [
-                    {
-                        "description": "Product data",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.ProductDTO"
-                        }
-                    }
-                ],
+                "summary": "Get all products",
                 "responses": {
                     "200": {
-                        "description": "Product updated successfully",
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -323,7 +804,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Creates a new product using the provided JSON payload",
+                "description": "Create new product",
                 "consumes": [
                     "application/json"
                 ],
@@ -333,21 +814,35 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Create a new product",
+                "summary": "Create new product",
                 "parameters": [
                     {
-                        "description": "Product data",
+                        "description": "product",
                         "name": "product",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.ProductDTO"
+                            "$ref": "#/definitions/dto.CreateProductRequest"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Product created successfully",
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -358,7 +853,10 @@ const docTemplate = `{
         },
         "/products/category/{category}": {
             "get": {
-                "description": "Retrieves a list of products filtered by the specified category.",
+                "description": "Get products by category (snack, drink, dessert, side)",
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "products"
                 ],
@@ -376,10 +874,22 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entities.Product"
-                            }
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
@@ -387,14 +897,17 @@ const docTemplate = `{
         },
         "/products/{id}": {
             "get": {
-                "description": "Retrieves a product by its unique identifier.",
+                "description": "Get product by ID",
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "products"
                 ],
                 "summary": "Get product by ID",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Product ID",
                         "name": "id",
                         "in": "path",
@@ -405,20 +918,99 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.ProductDTO"
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update product information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Update product",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "product",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateProductRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
             },
             "delete": {
-                "description": "Deletes a product from the database using its unique identifier.",
+                "description": "Delete product by ID",
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "products"
                 ],
-                "summary": "Delete a product by ID",
+                "summary": "Delete product",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Product ID",
                         "name": "id",
                         "in": "path",
@@ -427,7 +1019,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Product deleted successfully",
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -438,8 +1044,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.CreateCustomerDTO": {
+        "dto.CreateCustomerRequest": {
             "type": "object",
+            "required": [
+                "cpf",
+                "email",
+                "first_name",
+                "last_name"
+            ],
             "properties": {
                 "cpf": {
                     "type": "string",
@@ -459,8 +1071,11 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.OrderDTO": {
+        "dto.CreateOrderRequest": {
             "type": "object",
+            "required": [
+                "items"
+            ],
             "properties": {
                 "cpf": {
                     "type": "string",
@@ -470,214 +1085,56 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 123
                 },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.OrderItemDTO"
+                        "$ref": "#/definitions/dto.OrderItemRequest"
                     }
                 },
-                "status": {
+                "payment_method": {
+                    "description": "Optional: qr_code, credit_card, debit_card",
                     "type": "string",
-                    "example": "pending"
+                    "example": "qr_code"
                 }
             }
         },
-        "dto.OrderItemDTO": {
+        "dto.CreatePaymentRequest": {
             "type": "object",
+            "required": [
+                "amount",
+                "order_id",
+                "payment_method"
+            ],
             "properties": {
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "order_id": {
-                    "type": "integer",
-                    "example": 100
-                },
-                "price": {
-                    "type": "number",
-                    "example": 19.99
-                },
-                "product_id": {
-                    "type": "integer",
-                    "example": 200
-                },
-                "quantity": {
-                    "type": "integer",
-                    "example": 2
-                }
-            }
-        },
-        "dto.PaymentDTO": {
-            "type": "object",
-            "properties": {
-                "QrcodeUrl": {
-                    "type": "string"
-                },
                 "amount": {
-                    "type": "string"
-                },
-                "cpf": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.ProductDTO": {
-            "type": "object",
-            "properties": {
-                "category": {
-                    "type": "string",
-                    "example": "Lanche"
-                },
-                "description": {
-                    "type": "string",
-                    "example": "Delicioso cheeseburger com queijo cheddar e molho especial"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "image": {
-                    "type": "string",
-                    "example": "https://example.com/images/cheeseburger.png"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Cheeseburger"
-                },
-                "price": {
-                    "type": "string",
-                    "example": "19.90"
-                }
-            }
-        },
-        "entities.Customer": {
-            "type": "object",
-            "properties": {
-                "cpf": {
-                    "type": "string",
-                    "example": "123.456.789-00"
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2024-06-01T12:00:00Z"
-                },
-                "email": {
-                    "type": "string",
-                    "example": "joao.silva@email.com"
-                },
-                "first_name": {
-                    "type": "string",
-                    "example": "João"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "last_name": {
-                    "type": "string",
-                    "example": "Silva"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2024-06-02T15:30:00Z"
-                }
-            }
-        },
-        "entities.Order": {
-            "type": "object",
-            "properties": {
-                "cpf": {
-                    "type": "string",
-                    "example": "123.456.789-00"
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2024-06-01T12:00:00Z"
-                },
-                "customer_id": {
-                    "type": "integer",
-                    "example": 123
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.OrderItem"
-                    }
-                },
-                "status": {
-                    "type": "string",
-                    "example": "pending"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2024-06-01T12:30:00Z"
-                }
-            }
-        },
-        "entities.OrderItem": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2024-06-01T12:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "number"
                 },
                 "order_id": {
-                    "type": "integer",
-                    "example": 100
+                    "type": "integer"
                 },
-                "price": {
-                    "type": "number",
-                    "example": 19.99
-                },
-                "product_id": {
-                    "type": "integer",
-                    "example": 200
-                },
-                "quantity": {
-                    "type": "integer",
-                    "example": 2
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2024-06-01T12:30:00Z"
+                "payment_method": {
+                    "type": "string"
                 }
             }
         },
-        "entities.Product": {
+        "dto.CreateProductRequest": {
             "type": "object",
+            "required": [
+                "category",
+                "description",
+                "name",
+                "price"
+            ],
             "properties": {
                 "category": {
                     "type": "string",
-                    "example": "Sandwich"
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2024-06-01T12:00:00Z"
+                    "example": "snack"
                 },
                 "description": {
                     "type": "string",
                     "example": "Delicious cheeseburger with cheddar and pickles"
                 },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "image": {
+                "image_url": {
                     "type": "string",
                     "example": "https://example.com/images/cheeseburger.png"
                 },
@@ -688,17 +1145,124 @@ const docTemplate = `{
                 "price": {
                     "type": "number",
                     "example": 12.99
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2024-06-01T12:00:00Z"
                 }
             }
         },
-        "handlers.RequestBody": {
+        "dto.OrderItemRequest": {
             "type": "object",
+            "required": [
+                "product_id",
+                "quantity"
+            ],
+            "properties": {
+                "product_id": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "quantity": {
+                    "type": "integer",
+                    "example": 2
+                }
+            }
+        },
+        "dto.UpdateCustomerRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "joao.silva@email.com"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "João"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Silva"
+                }
+            }
+        },
+        "dto.UpdateOrderStatusRequest": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
             "properties": {
                 "status": {
+                    "type": "string",
+                    "enum": [
+                        "awaiting_payment",
+                        "received",
+                        "in_progress",
+                        "ready",
+                        "completed",
+                        "cancelled"
+                    ],
+                    "example": "received"
+                }
+            }
+        },
+        "dto.UpdateProductRequest": {
+            "type": "object",
+            "required": [
+                "category",
+                "description",
+                "name",
+                "price"
+            ],
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "example": "snack"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Delicious cheeseburger with cheddar and pickles"
+                },
+                "image_url": {
+                    "type": "string",
+                    "example": "https://example.com/images/cheeseburger.png"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Cheeseburger"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 12.99
+                }
+            }
+        },
+        "dto.WebhookPaymentRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "order_id",
+                "status",
+                "transaction_id"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "order_id": {
+                    "type": "integer"
+                },
+                "payment_method": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "transaction_id": {
                     "type": "string"
                 }
             }
@@ -708,12 +1272,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "SOAT Tech Challenge Fast Food API",
-	Description:      "API para gerenciamento de pedidos e produtos de lanchonete do SOAT Tech Challenge.",
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
