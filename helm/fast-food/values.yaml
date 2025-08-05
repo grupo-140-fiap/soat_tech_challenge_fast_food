@@ -5,8 +5,8 @@ global:
 app:
   name: fast-food-api
   image:
-    repository: docker.io/elvismariel/soat_fast_food
-    tag: "0.2"
+    repository: danieltezolin/fast-food-api
+    tag: "latest"
     pullPolicy: IfNotPresent
   
   service:
