@@ -224,9 +224,7 @@ app:
 
 ### Acesso Externo
 ```bash
-# Via LoadBalancer (se suportado)
-kubectl get svc fast-food
 
 # Via Port-Forward
-kubectl port-forward svc/fast-food 8080:80
+kubectl port-forward service/fast-food-api-clusterip 8080:8080 -n fast-food
 ```

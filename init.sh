@@ -61,7 +61,7 @@ for NOME in "${!ITENS[@]}"; do
     -d "{
         \"name\": \"$NOME\",
         \"description\": \"$DESCRICAO\",
-        \"price\": \"$PRECO\",
+        \"price\": $PRECO,
         \"category\": \"$CATEGORIA\"
     }"
     
